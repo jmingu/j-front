@@ -1,7 +1,7 @@
 'use client'
 import Link from 'next/link'
 import React, { useState } from 'react'
-import NavItem from './NavItem';
+import NavItem from './navItem';
 
 const Navber = () => {
 
@@ -15,27 +15,31 @@ const Navber = () => {
     return (
         <nav className='relative z-10 w-full bg-orange-500'>
             {/* 웹 화면 */}
-            <div className='text-2xl flex sm:hidden'>
-                {menu === false ? 
-                <button onClick={handleMenu}>+</button> :
-                <button onClick={handleMenu}>-</button> 
-                }
-            </div>
-            <div className='flex items-center justify-center sm:justify-between mx-10'>
-
-                <div className='flex items-center text-2xl h-14'>
-                    <Link href="/">로고자리</Link>
+            <div className='flex w-full'>
+                <div className='text-2xl flex sm:hidden ms-3'>
+                    <button onClick={handleMenu}>메뉴</button>
                 </div>
-
+                <div className='flex items-center justify-center sm:justify-between mx-10 w-full'>
                 
+                    <div className='flex items-center text-2xl h-14'>
+                        <Link href="/">로고자리</Link>
+                    </div>
 
-                <div className='hidden sm:block'>
-                    <NavItem />
+                    <div className='hidden sm:block'>
+                        <NavItem />
+                    </div>
                 </div>
             </div>
-            <div className='block sm:hidden'>
-                {/* 모바일이라 전달 */}
-                {(menu === false) ? null : <NavItem mobile />} 
+            
+            {/* 모바일 메뉴 */}
+            <div className={`fixed top-0 left-0 h-full w-full bg-white transform transition-transform duration-200 ease-in-out ${menu ? 'translate-x-0' : '-translate-x-full'}`}>
+                <div className='h-full flex mt-2'>
+                    <NavItem mobile />
+                    <div>
+                        <button onClick={handleMenu}>X</button>
+                    </div>
+                </div>
+                
             </div>
         </nav>
     )
