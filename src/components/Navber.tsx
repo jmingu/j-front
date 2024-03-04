@@ -13,7 +13,7 @@ const Navber = () => {
     }
 
     return (
-        <nav className='relative z-10 w-full bg-orange-500'>
+        <nav className='relative z-10 w-full bg-gray-100'>
             {/* 웹 화면 */}
             <div className='flex w-full'>
                 <div className='text-2xl flex sm:hidden ms-3'>

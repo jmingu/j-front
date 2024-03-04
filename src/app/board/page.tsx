@@ -67,25 +67,30 @@ const BoardPage = () => {
     };
 
     return (
-        <div className="p-4">
-            <h1 className="text-2xl font-bold mb-4">자유게시판</h1>
-            <div className="h-[70lvh]">
+        <>
+            <div className="max-w-3xl mx-auto p-4 ">
+                <div className='flex justify-between'>
+                    <h1 className="text-2xl font-bold mb-4">자유게시판</h1>
+                    <div>
+                        <Link href={`/board/write`}>글작성</Link>
+                    </div>
+                </div>
+                <div className="">
+                    {getCurrentPageItems().length === 0 ? 
+                        <div>글이 없습니다.</div> :
+                        <ul className="bg-white shadow overflow-hidden rounded-md divide-y divide-gray-200">
+                            {getCurrentPageItems().map((item) => (
+                                <li key={item.id} className="px-4 py-3">
+                                    <Link href={`/board/${item.id}`}>
+                                        {item.title}
+                                    </Link>
+                                <span className="text-gray-500 text-sm"> - {item.author}</span>
+                                </li>
+                            ))}
+                        </ul>
+                    }
+                </div>
                 {getCurrentPageItems().length === 0 ? 
-                    <div>글이 없습니다.</div> :
-                    <ul className="bg-white shadow overflow-hidden rounded-md divide-y divide-gray-200">
-                        {getCurrentPageItems().map((item) => (
-                            <li key={item.id} className="px-4 py-3">
-                                <Link href={`/board/${item.id}`}>
-                                    {item.title}
-                                </Link>
-                            <span className="text-gray-500 text-sm"> - {item.author}</span>
-                            </li>
-                        ))}
-                    </ul>
-                }
-            </div>
-
-            {getCurrentPageItems().length === 0 ? 
                 <></> : 
                 <div className="mt-4 flex justify-center">
                 
@@ -102,8 +107,8 @@ const BoardPage = () => {
                     <button className="ml-2" onClick={goToNextPage}>다음</button>
                 </div>
             }
-        </div>
-        
+            </div>
+        </>
     );
 };
 
