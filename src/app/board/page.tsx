@@ -68,19 +68,19 @@ const BoardPage = () => {
 
     return (
         <>
-            <div className="max-w-3xl mx-auto p-4 ">
+            <div className="p-4 ">
                 <div className='flex justify-between'>
                     <h1 className="text-2xl font-bold mb-4">자유게시판</h1>
                     <div>
-                        <Link href={`/board/write`}>글작성</Link>
+                        <Link href={`/board/write/ `}>글작성</Link>
                     </div>
                 </div>
-                <div className="">
+                <div>
                     {getCurrentPageItems().length === 0 ? 
                         <div>글이 없습니다.</div> :
                         <ul className="bg-white shadow overflow-hidden rounded-md divide-y divide-gray-200">
                             {getCurrentPageItems().map((item) => (
-                                <li key={item.id} className="px-4 py-3">
+                                <li key={item.id} className="px-4 py-3 overflow-ellipsis overflow-hidden whitespace-nowrap">
                                     <Link href={`/board/${item.id}`}>
                                         {item.title}
                                     </Link>

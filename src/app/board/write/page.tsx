@@ -1,11 +1,20 @@
+'use client'
+import { redirect } from 'next/navigation';
+
 import React from 'react'
+import Link from 'next/link';
 
 const Write = () => {
+
+    const handleRedirect = () => {
+        console.log("sss")
+        redirect('/board');
+      };
     return (
         <>
-            <div className="max-w-3xl mx-auto p-8 h-[60vh]">
+            <div className="p-8 h-[60vh]">
                 <div className='flex justify-end mt-3'>
-                    <div>작성</div>
+                    <button onClick={handleRedirect}>완1료</button>
                 </div>
                 <div className='flex justify-between mb-3'>
                     <input className="focus:outline-none py-1 px-2" placeholder="제목을 입력해 주세요." />

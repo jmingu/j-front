@@ -18,9 +18,12 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`sm:px-10 ${inter.className}`}>
+      <body className={`sm:max-w-4xl sm:m-auto ${inter.className}`}>
           <Navber />
-        {children}
+        <div className="mt-6 sm:mt-16 px-5">
+          {children}
+        </div>
+        
       </body>
     </html>
   );

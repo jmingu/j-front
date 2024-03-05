@@ -1,10 +1,11 @@
 'use client'
 import Link from 'next/link';
 import React from 'react'
+import {useRouter} from 'next/navigation'
 
-const NavItem = ({mobile} : {mobile?: boolean }) => {
-    console.log("mobile ==" + mobile);
 
+const NavItem = ({mobile, setMenu} : {mobile?: boolean, setMenu?:any }) => {
+    const router = useRouter()
     // 모바일
     if (true === mobile){
         return (
@@ -13,13 +14,13 @@ const NavItem = ({mobile} : {mobile?: boolean }) => {
                     <div className='mb-10'>로그인</div>
                     <ul className='flex flex-col gap-4 text-md justify-center gap-10 w-full'>
                         <li>
-                            <Link href="/board">게시판</Link> 
+                            <button onClick={()=>{ setMenu(false); router.push('/board');  }}>게시판</button>
                         </li>
                         <li>
-                            <Link href="/notice">공지사항</Link> 
+                            <button onClick={()=>{ setMenu(false); router.push('/notice');  }}>공지사항</button>
                         </li>
                     </ul>
-                    </div>
+                </div>
             </>
         )
     }

@@ -3,7 +3,8 @@ import React, { useState } from 'react';
 interface CommentProps {
   id: number,
   content: string,
-  date: string
+  date: string,
+  editEnable: boolean
 }
 
 const Comment = ({ comment }: { comment: CommentProps }) => {
@@ -46,8 +47,14 @@ const Comment = ({ comment }: { comment: CommentProps }) => {
             <>
                 <p>{comment.content}</p>
                 <div className="flex">
-                    <div onClick={handleEdit}>수정</div>
-                    <div onClick={handleDelete} className='ml-2'>삭제</div>
+                {
+                    comment.editEnable === true ?
+                        <>
+                            <div onClick={handleEdit}>수정</div>
+                            <div onClick={handleDelete} className='ml-2'>삭제</div>
+                        </>
+                    : null
+                }                         
                 </div>
             </>
         )}
