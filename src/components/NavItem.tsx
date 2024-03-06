@@ -11,7 +11,9 @@ const NavItem = ({mobile, setMenu} : {mobile?: boolean, setMenu?:any }) => {
         return (
             <>
                 <div className='w-full ml-2'>
-                    <div className='mb-10'>로그인</div>
+                    <div className='mb-10'>
+                        <button onClick={()=>{ setMenu(false); router.push('/login');  }}>로그인</button>
+                    </div>
                     <ul className='flex flex-col gap-4 text-md justify-center gap-10 w-full'>
                         <li>
                             <button onClick={()=>{ setMenu(false); router.push('/board');  }}>게시판</button>
@@ -37,7 +39,7 @@ const NavItem = ({mobile, setMenu} : {mobile?: boolean, setMenu?:any }) => {
                             <Link href="/notice">공지사항</Link> 
                         </li>
                         <li className='ml-10'>
-                            로그인
+                            <Link href="/login">로그인</Link> 
                         </li>
                     </ul>
                 </div>

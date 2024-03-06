@@ -1,10 +1,15 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import { Inter, Noto_Sans_KR  } from "next/font/google";
 import "./globals.css";
 import Navber from "@/components/navber";
 
 
 const inter = Inter({ subsets: ["latin"] });
+const notoSansKr = Noto_Sans_KR({
+  weight: ['500'],
+  subsets: ['latin'],
+});
+
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -18,7 +23,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`sm:max-w-4xl sm:m-auto ${inter.className}`}>
+      <body className={`sm:max-w-4xl sm:m-auto ${notoSansKr.className}`}>
           <Navber />
         <div className="mt-6 sm:mt-16 px-5">
           {children}
