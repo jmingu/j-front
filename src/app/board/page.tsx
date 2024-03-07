@@ -1,6 +1,9 @@
 "use client"
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react'
 import Link from 'next/link';
+import axios from 'axios';
+import {USE_BACK_URL} from '../../../constants'
+import {useRouter} from 'next/navigation'
 
 interface BoardItem {
     id: number;
@@ -9,6 +12,8 @@ interface BoardItem {
 }
 
 const BoardPage = () => {
+    const router = useRouter();
+    
     const boardList: BoardItem[] = [
         { id: 1, title: '첫 번째 게시물', author: '작성자1' },
         { id: 2, title: '두 번째 게시물', author: '작성자2' },
@@ -66,6 +71,29 @@ const BoardPage = () => {
         setCurrentPage(pageNumber);
     };
 
+
+    useEffect(() => {
+        const tokenData = sessionStorage.getItem('k');
+
+        axios.get(USE_BACK_URL+'/post/api/borads?page=' + (currentPage -1), {
+            headers: {
+                'Authorization': 'Bearer '+ tokenData,
+                'Content-Type': 'application/json'
+            }
+          })
+          .then( response => {
+            if(response.status === 200){
+
+                console.log(response.data.result);
+            }
+          })
+          .catch(error => {
+            router.push("/error");
+            console.error(error); // 에러 로깅
+          });
+
+    }, []);
+
     return (
         <>
             <div className="p-4 ">
@@ -80,11 +108,14 @@ const BoardPage = () => {
                         <div>글이 없습니다.</div> :
                         <ul className="bg-white shadow overflow-hidden rounded-md divide-y divide-gray-200">
                             {getCurrentPageItems().map((item) => (
-                                <li key={item.id} className="px-4 py-3 overflow-ellipsis overflow-hidden whitespace-nowrap">
-                                    <Link href={`/board/${item.id}`}>
-                                        {item.title}
-                                    </Link>
-                                <span className="text-gray-500 text-sm"> - {item.author}</span>
+                                <li key={item.id} className="px-4 py-3">
+                                    <div className='overflow-ellipsis overflow-hidden whitespace-nowrap'>
+                                        <Link href={`/board/${item.id}`}>
+                                            {item.title}
+                                        </Link>
+                                        <div className="text-gray-500 text-sm"> {item.author}</div>
+                                    </div>
+                                    
                                 </li>
                             ))}
                         </ul>

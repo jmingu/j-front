@@ -3,14 +3,15 @@ import Link from 'next/link'
 import React, { useState } from 'react'
 import NavItem from './navItem';
 
-const Navber = () => {
 
+const Navber = () => {
     const [menu, setMenu] = useState(false);
 
+
     const handleMenu = () => {
-        console.log(menu)
         setMenu(!menu);
     }
+
 
     return (
         <nav className='w-full bg-gray-100'>

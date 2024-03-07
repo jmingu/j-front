@@ -1,9 +1,9 @@
 import React from 'react'
 
-const ErrorLoginPage = () => {
+const ErrorPage = () => {
   return (
     <div>ERROR</div>
   )
 }
 
-export default ErrorLoginPage
+export default ErrorPage
