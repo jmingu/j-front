@@ -3,52 +3,26 @@ import React, { useEffect, useState } from 'react'
 import Link from 'next/link';
 import axios from 'axios';
 import {USE_BACK_URL} from '../../../constants'
-import {useRouter} from 'next/navigation'
+import {useRouter} from 'next/navigation';
 
 interface BoardItem {
-    id: number;
+    boardId: number;
     title: string;
-    author: string;
+    content: string;
+    createDate : string;
+    nickname: string;
+    viewCount: number;
 }
 
 const BoardPage = () => {
     const router = useRouter();
     
-    const boardList: BoardItem[] = [
-        { id: 1, title: '첫 번째 게시물', author: '작성자1' },
-        { id: 2, title: '두 번째 게시물', author: '작성자2' },
-        { id: 3, title: '세 번째 게시물', author: '작성자3' },
-        { id: 4, title: '네 번째 게시물', author: '작성자4' },
-        { id: 5, title: '다섯 번째 게시물', author: '작성자5' },
-        { id: 6, title: '다섯 번째 게시물', author: '작성자6' },
-        { id: 7, title: '다섯 번째 게시물', author: '작성자7' },
-        { id: 8, title: '다섯 번째 게시물', author: '작성자8' },
-        { id: 9, title: '다섯 번째 게시물', author: '작성자9' },
-        { id: 10, title: '다섯 번째 게시물', author: '작성자10' },
-        { id: 11, title: '다섯 번째 게시물', author: '작성자11' },
-        { id: 12, title: '다섯 번째 게시물', author: '작성자12' },
-        { id: 13, title: '다섯 번째 게시물', author: '작성자13' },
-        { id: 14, title: '다섯 번째 게시물', author: '작성자14' },
-        { id: 15, title: '다섯 번째 게시물', author: '작성자15' },
-        { id: 16, title: '다섯 번째 게시물', author: '작성자16' },
-        { id: 17, title: '다섯 번째 게시물', author: '작성자17' },
-        { id: 18, title: '다섯 번째 게시물', author: '작성자18' },
-        { id: 19, title: '다섯 번째 게시물', author: '작성자19' },
-        { id: 20, title: '다섯 번째 게시물', author: '작성자20' },
-        { id: 21, title: '다섯 번째 게시물', author: '작성자21' },
-    // 게시물 데이터 예시 (필요에 따라 더 추가할 수 있습니다)
-    ];
+    const [boardList, setBoardList] = useState<BoardItem[]>([]); // boardList 상태 선언
+    const [totalPages, setTotalPages] = useState(0); // 전체 페이지 개수
 
     const itemsPerPage = 10; // 한 페이지에 표시할 게시물 개수
-    const totalPages = Math.ceil(boardList.length / itemsPerPage); // 전체 페이지 개수
-    const [currentPage, setCurrentPage] = useState<number>(1); // 현재 페이지
 
-    // 현재 페이지에 해당하는 게시물 목록 가져오기
-    const getCurrentPageItems = (): BoardItem[] => {
-        const startIndex = (currentPage - 1) * itemsPerPage;
-        const endIndex = startIndex + itemsPerPage;
-        return boardList.slice(startIndex, endIndex);
-    };
+    const [currentPage, setCurrentPage] = useState<number>(1); // 현재 페이지
 
     // 이전 페이지로 이동
     const goToPreviousPage = (): void => {
@@ -71,28 +45,26 @@ const BoardPage = () => {
         setCurrentPage(pageNumber);
     };
 
-
     useEffect(() => {
         const tokenData = sessionStorage.getItem('k');
-
-        axios.get(USE_BACK_URL+'/post/api/borads?page=' + (currentPage -1), {
+        axios.get(USE_BACK_URL+'/post/api/borads?page=' + currentPage, {
             headers: {
                 'Authorization': 'Bearer '+ tokenData,
                 'Content-Type': 'application/json'
             }
-          })
-          .then( response => {
+        })
+        .then( response => {
             if(response.status === 200){
-
-                console.log(response.data.result);
+                setTotalPages(Math.ceil((response.data.result.totalBoard)/itemsPerPage));
+                setBoardList(response.data.result.boardList);
             }
-          })
-          .catch(error => {
+        })
+        .catch(error => {
             router.push("/error");
             console.error(error); // 에러 로깅
-          });
-
-    }, []);
+        });
+    
+    }, [currentPage]); // currentPage를 의존성 배열에 추가
 
     return (
         <>
@@ -104,16 +76,20 @@ const BoardPage = () => {
                     </div>
                 </div>
                 <div>
-                    {getCurrentPageItems().length === 0 ? 
+                    {totalPages === 0 ? 
                         <div>글이 없습니다.</div> :
                         <ul className="bg-white shadow overflow-hidden rounded-md divide-y divide-gray-200">
-                            {getCurrentPageItems().map((item) => (
-                                <li key={item.id} className="px-4 py-3">
+                            {boardList.map((item) => (
+                                <li key={item.boardId} className="px-4 py-2">
                                     <div className='overflow-ellipsis overflow-hidden whitespace-nowrap'>
-                                        <Link href={`/board/${item.id}`}>
+                                        <Link href={`/board/${item.boardId}`}>
                                             {item.title}
                                         </Link>
-                                        <div className="text-gray-500 text-sm"> {item.author}</div>
+                                        <div className='flex'>
+                                            <div className="text-gray-500 text-sm"> {item.createDate}</div>
+                                            <div className="text-gray-500 ml-5 text-sm"> {item.nickname}</div>
+                                            <div className="text-gray-500 ml-5 text-sm">조회수 : {item.viewCount}</div>
+                                        </div>
                                     </div>
                                     
                                 </li>
@@ -121,20 +97,20 @@ const BoardPage = () => {
                         </ul>
                     }
                 </div>
-                {getCurrentPageItems().length === 0 ? 
+                {totalPages === 0 ? 
                 <></> : 
                 <div className="mt-4 flex justify-center">
                 
                     <button className="mr-2" onClick={goToPreviousPage}>이전</button>
-                    {Array.from({ length: totalPages }, (_, index) => (
-                        <button
-                            key={index}
-                            className={`mx-1 ${currentPage === index + 1 ? "font-bold" : ""}`}
-                            onClick={() => goToPage(index + 1)}
-                        >
-                            {index + 1}
-                        </button>
-                    ))}
+                        {Array.from({ length: totalPages }, (_, index) => (
+                            <button
+                                key={index}
+                                className={`mx-1 ${currentPage === index + 1 ? "font-bold" : ""}`}
+                                onClick={() => goToPage(index + 1)}
+                            >
+                                {index + 1}
+                            </button>
+                        ))}
                     <button className="ml-2" onClick={goToNextPage}>다음</button>
                 </div>
             }

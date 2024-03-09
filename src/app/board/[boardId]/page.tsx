@@ -1,7 +1,10 @@
 "use client"
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
+import {USE_BACK_URL} from '../../../../constants'
 import Comment from './comment';
 import Link from 'next/link';
+import axios from 'axios';
+import {useRouter} from 'next/navigation'
 
 
 interface Params {
@@ -17,10 +20,11 @@ interface CommentProps {
 }
   
 interface PostProps {
-    id: number,
+    boardId: number,
     title: string,
-    author: string,
-    date: string,
+    nickname: string,
+    createDate: string,
+    viewCount: number;
     editEnable: boolean,
     content: string,
     comments: CommentProps[]
@@ -28,14 +32,17 @@ interface PostProps {
 
 const BoardDetailPage = ({ params }: { params: { boardId: number } }) => {
     console.log(params.boardId);
-
+    const router = useRouter();
+    
+    const [post, setPost] =  useState<PostProps>();
     // 가상의 데이터를 사용하여 게시물 정보를 표시
-    const post: PostProps = {
-        id: 1,
+    const post1: PostProps = {
+        boardId: 1,
         title: '안녕하세요',
-        author: '홍길동',
-        date: '2024.03.04',
+        nickname: '홍길동',
+        createDate: '2024.03.04',
         content: '동해물과 백두산이',
+        viewCount: 0,
         editEnable : true,
         comments: [
             {
@@ -60,16 +67,40 @@ const BoardDetailPage = ({ params }: { params: { boardId: number } }) => {
         ]
     };
 
+    useEffect(() => {
+        const tokenData = sessionStorage.getItem('k');
+
+        axios.get(USE_BACK_URL+'/post/api/borads/' + params.boardId, {
+            headers: {
+                'Authorization': 'Bearer '+ tokenData,
+                'Content-Type': 'application/json'
+            }
+        })
+        .then( response => {
+            if(response.status === 200){
+                
+                console.log(response.data.result);
+
+                setPost(response.data.result);
+            }
+        })
+        .catch(error => {
+            router.push("/error");
+            console.error(error); // 에러 로깅
+        });
+    
+    }, []);
+
     return (
         <div className="max-w-3xl mx-auto p-8">
             <div className='flex justify-between'>
-                <h1 className='font-bold mb-4'>{post.title}</h1>
+                <h1 className='font-bold mb-4'>{post?.title}</h1>
                 <div className="flex">
                 {
-                    post.editEnable === true ?
+                    post?.editEnable === true ?
                         <>
                             {/* <div>수정</div> */}
-                            <Link href={`/board/write?id=${post.id}`}>수정</Link>
+                            <Link href={`/board/write?id=${post.boardId}`}>수정</Link>
                             <div className='ml-2'>삭제</div>
                         </>
                     : null
@@ -77,14 +108,15 @@ const BoardDetailPage = ({ params }: { params: { boardId: number } }) => {
                 </div>
             </div>
             <div className='flex mb-2'>
-                <p className="text-sm text-gray-500 mb-2">작성자: {post.author}</p>
-                <p className="text-sm text-gray-500 mb-4 ml-5">작성일자: {post.date}</p>
+                <p className="text-sm text-gray-500 mb-2">{post?.createDate}</p>
+                <p className="text-sm text-gray-500 mb-4 ml-5">{post?.nickname}</p>
+                <p className="text-sm text-gray-500 mb-4 ml-5">조회수: {post?.viewCount}</p>
             </div>
             <div className="relative mb-4 py-20 border-t-2 border-b-2 border-gray-200">
-                <p className='absolute top-0 mt-3'>{post.content}</p>
+                <p className='absolute top-0 mt-3'>{post?.content}</p>
             </div>
             <h2 className="font-bold mb-2">댓글</h2>
-            {post.comments.map((comment, index) => (
+            {/* {post?.comments.map((comment, index) => (
                 <div key={index}>
                     <Comment key={index} comment={comment} />
                     {comment.comments.map((subComment, subIndex) => ( 
@@ -98,7 +130,7 @@ const BoardDetailPage = ({ params }: { params: { boardId: number } }) => {
                         </div>
                     ))}
                 </div>
-            ))}
+            ))} */}
 
         </div>
     );
