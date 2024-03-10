@@ -23,15 +23,20 @@ const NextPage = () => {
       const searchState = searchParams.get('state')
 
       // ...
-      axios.get(USE_BACK_URL + '/user/api/oauth/login/naver?code=' + searchCode + '&state=' + searchState)
+      axios.get(USE_BACK_URL + '/user/api/oauth/login/naver?code=' + searchCode + '&state=' + searchState,{
+        headers: {
+          'Authorization': 'Bearer noBearer' ,
+          'Content-Type': 'application/json'
+        }
+      })
         .then( response => {
 
           if(response.status === 200) {
             sessionStorage.setItem('k', response.data.result.accessToken);
             localStorage.setItem('p', response.data.result.refreshToken);
             
-            const tokenData = sessionStorage.getItem('k');
-            
+            const tokenData = response.data.result.accessToken;
+ 
             axios.get(USE_BACK_URL+'/user/api/user/token', {
               headers: {
                   'Authorization': 'Bearer '+ tokenData,

@@ -12,11 +12,11 @@ interface Params {
 }
 
 interface CommentProps {
-    id: number,
+    commentId: number,
     content: string,
-    date: string,
+    nickname: string,
+    createDate: string,
     editEnable: boolean,
-    comments: CommentProps[] 
 }
   
 interface PostProps {
@@ -26,62 +26,60 @@ interface PostProps {
     createDate: string,
     viewCount: number;
     editEnable: boolean,
-    content: string,
-    comments: CommentProps[]
+    content: string
 }
 
 const BoardDetailPage = ({ params }: { params: { boardId: number } }) => {
-    console.log(params.boardId);
+    // console.log(params.boardId);
     const router = useRouter();
     
     const [post, setPost] =  useState<PostProps>();
-    // 가상의 데이터를 사용하여 게시물 정보를 표시
-    const post1: PostProps = {
-        boardId: 1,
-        title: '안녕하세요',
-        nickname: '홍길동',
-        createDate: '2024.03.04',
-        content: '동해물과 백두산이',
-        viewCount: 0,
-        editEnable : true,
-        comments: [
-            {
-                id: 1,
-                content: '댓글 1',
-                date: '2024.03.04',
-                editEnable : false,
-                comments: [
-                    { id: 1, content: '대댓글 1', date: '2024.03.04', editEnable : true, comments:[] },
-                    { id: 2, content: '대댓글 2', date: '2024.03.04', editEnable : false, comments:[] }
-                ]
-            },
-            {
-                id: 2,
-                content: '댓글 2',
-                date: '2024.03.04',
-                editEnable : true,
-                comments: [
-                    { id: 3, content: '대댓글 3', date: '2024.03.04', editEnable : false, comments:[] },
-                ]
-            }
-        ]
+    
+
+    // 댓글
+    const [comments, setComments] =  useState<CommentProps[]>([]);
+    const [totalPages, setTotalPages] = useState(0); // 전체 페이지 개수
+    const itemPage = 2; // 한 페이지에 표시할 게시물 개수
+    const [currentPage, setCurrentPage] = useState<number>(1); // 현재 페이지
+
+    // 이전 페이지로 이동
+    const goToPreviousPage = (): void => {
+        if(currentPage !== 1){
+            setCurrentPage((prevPage) => prevPage - 1);
+        }
+        
     };
 
-    useEffect(() => {
-        const tokenData = sessionStorage.getItem('k');
+    // 다음 페이지로 이동
+    const goToNextPage = (): void => {
+        if(currentPage !== totalPages){
+            setCurrentPage((prevPage) => prevPage + 1);
+        }
+        
+    };
 
+    // 페이지 번호 클릭 시 해당 페이지로 이동
+    const goToPage = (pageNumber: number): void => {
+        setCurrentPage(pageNumber);
+    };
+
+
+
+    // 상세
+    useEffect(() => {
+
+        
         axios.get(USE_BACK_URL+'/post/api/borads/' + params.boardId, {
             headers: {
-                'Authorization': 'Bearer '+ tokenData,
+                'Authorization': 'Bearer '+ sessionStorage.getItem('k'),
                 'Content-Type': 'application/json'
             }
         })
         .then( response => {
             if(response.status === 200){
-                
-                console.log(response.data.result);
-
+    
                 setPost(response.data.result);
+                
             }
         })
         .catch(error => {
@@ -89,10 +87,36 @@ const BoardDetailPage = ({ params }: { params: { boardId: number } }) => {
             console.error(error); // 에러 로깅
         });
     
-    }, []);
+    }, []); // 이 훅은 컴포넌트가 마운트될 때 한 번만 실행됩니다.
+    
+    // 댓글
+    useEffect(() => {
+
+        setComments([])
+        axios.get(USE_BACK_URL+'/post/api/borads/' + params.boardId + "/comments?page=" + currentPage, {
+            headers: {
+                'Authorization': 'Bearer '+ sessionStorage.getItem('k'),
+                'Content-Type': 'application/json'
+            }
+        })
+        .then( response => {
+            if(response.status === 200){
+                
+                setComments(response.data.result.commentList);
+                setTotalPages(Math.ceil((response.data.result.totalComment)/itemPage));
+    
+            }
+        })
+        .catch(error => {
+            router.push("/error");
+            console.error(error); // 에러 로깅
+        });
+    }, [currentPage]); // currentPage에 대한 의존성을 가지고 있습니다.
+
+
 
     return (
-        <div className="max-w-3xl mx-auto p-8">
+        <div className="max-w-3xl mx-auto p-2">
             <div className='flex justify-between'>
                 <h1 className='font-bold mb-4'>{post?.title}</h1>
                 <div className="flex">
@@ -115,22 +139,42 @@ const BoardDetailPage = ({ params }: { params: { boardId: number } }) => {
             <div className="relative mb-4 py-20 border-t-2 border-b-2 border-gray-200">
                 <p className='absolute top-0 mt-3'>{post?.content}</p>
             </div>
-            <h2 className="font-bold mb-2">댓글</h2>
-            {/* {post?.comments.map((comment, index) => (
+            <div className='flex justify-evenly my-4'>
+                <div>좋아요</div>
+                <div>싫어요</div>
+            </div>
+            <div className='flex justify-between'>
+                <h2 className="font-bold mb-2">댓글</h2>
+                {
+                    sessionStorage.getItem('u') !== null ?
+                    <div>완료</div> :
+                    <></>
+                }
+                
+            </div>
+            <textarea className="top-0 border-2 border-gray-200 resize-none focus:outline-none w-full h-full p-3" placeholder={sessionStorage.getItem('u') !== null ? '댓글을 작성해 주세요.' : '로그인 후 작성이 가능합니다.'}/>
+            {comments.map((comment, index) => (
                 <div key={index}>
-                    <Comment key={index} comment={comment} />
-                    {comment.comments.map((subComment, subIndex) => ( 
-                        <div key={subIndex}>
-                            <div className='ml-3 flex'>
-                                <div>└</div>
-                                <div className='w-full'>
-                                    <Comment key={subIndex} comment={subComment}/>
-                                </div>
-                            </div>
-                        </div>
-                    ))}
+                    <Comment key={index} comment={comment} boardId={params.boardId} currentPage={currentPage} />
                 </div>
-            ))} */}
+            ))}
+            {
+                totalPages === 0 ? 
+                <></> : 
+                <div className="mt-4 flex justify-center">
+                    <button className="mr-2" onClick={goToPreviousPage}>이전</button>
+                        {Array.from({ length: totalPages }, (_, index) => (
+                            <button
+                                key={index}
+                                className={`mx-1 ${currentPage === index + 1 ? "font-bold" : ""}`}
+                                onClick={() => goToPage(index + 1)}
+                            >
+                                {index + 1}
+                            </button>
+                        ))}
+                    <button className="ml-2" onClick={goToNextPage}>다음</button>
+                </div>
+            }
 
         </div>
     );

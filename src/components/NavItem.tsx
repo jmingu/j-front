@@ -34,8 +34,6 @@ const NavItem = ({mobile, setMenu} : {mobile?: boolean, setMenu?:any }) => {
         sessionStorage.clear()
     }
 
-
-
     // 모바일
     if (true === mobile){
         return (

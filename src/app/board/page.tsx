@@ -46,10 +46,10 @@ const BoardPage = () => {
     };
 
     useEffect(() => {
-        const tokenData = sessionStorage.getItem('k');
+
         axios.get(USE_BACK_URL+'/post/api/borads?page=' + currentPage, {
             headers: {
-                'Authorization': 'Bearer '+ tokenData,
+                'Authorization': 'Bearer '+ sessionStorage.getItem('k'),
                 'Content-Type': 'application/json'
             }
         })
@@ -71,9 +71,13 @@ const BoardPage = () => {
             <div className="p-4 ">
                 <div className='flex justify-between'>
                     <h1 className="text-2xl font-bold mb-4">자유게시판</h1>
-                    <div>
-                        <Link href={`/board/write/ `}>글작성</Link>
-                    </div>
+                    {
+                        sessionStorage.getItem('u') !== null ?
+                        <div>
+                            <Link href={`/board/write/ `}>글작성</Link>
+                        </div> :
+                        <></>
+                    }   
                 </div>
                 <div>
                     {totalPages === 0 ? 
@@ -97,23 +101,23 @@ const BoardPage = () => {
                         </ul>
                     }
                 </div>
-                {totalPages === 0 ? 
-                <></> : 
-                <div className="mt-4 flex justify-center">
-                
-                    <button className="mr-2" onClick={goToPreviousPage}>이전</button>
-                        {Array.from({ length: totalPages }, (_, index) => (
-                            <button
-                                key={index}
-                                className={`mx-1 ${currentPage === index + 1 ? "font-bold" : ""}`}
-                                onClick={() => goToPage(index + 1)}
-                            >
-                                {index + 1}
-                            </button>
-                        ))}
-                    <button className="ml-2" onClick={goToNextPage}>다음</button>
-                </div>
-            }
+                {
+                    totalPages === 0 ? 
+                    <></> : 
+                    <div className="mt-4 flex justify-center">
+                        <button className="mr-2" onClick={goToPreviousPage}>이전</button>
+                            {Array.from({ length: totalPages }, (_, index) => (
+                                <button
+                                    key={index}
+                                    className={`mx-1 ${currentPage === index + 1 ? "font-bold" : ""}`}
+                                    onClick={() => goToPage(index + 1)}
+                                >
+                                    {index + 1}
+                                </button>
+                            ))}
+                        <button className="ml-2" onClick={goToNextPage}>다음</button>
+                    </div>
+                }
             </div>
         </>
     );

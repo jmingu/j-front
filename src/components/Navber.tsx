@@ -33,7 +33,7 @@ const Navber = () => {
             </div>
             
             {/* 모바일 메뉴 */}
-            <div className={`fixed top-0 left-0 h-full w-full bg-white transform transition-transform duration-200 ease-in-out ${menu ? 'translate-x-0' : '-translate-x-full'}`}>
+            <div className={`z-10 fixed top-0 left-0 h-full w-full bg-white transform transition-transform duration-200 ease-in-out ${menu ? 'translate-x-0' : '-translate-x-full'}`}>
                 <div className='h-full flex mt-2'>
                     <NavItem mobile setMenu={setMenu}/>
                     <div>
