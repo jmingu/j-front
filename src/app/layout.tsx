@@ -25,7 +25,7 @@ export default function RootLayout({
     <html lang="en">
       <body className={`sm:max-w-4xl sm:m-auto ${notoSansKr.className}`}>
           <Navber />
-        <div className="mt-6 sm:mt-16 px-5">
+        <div className="mt-4 sm:mt-10 px-5">
           {children}
         </div>
         

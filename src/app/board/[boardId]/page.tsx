@@ -4,7 +4,7 @@ import {USE_BACK_URL} from '../../../../constants'
 import Comment from './comment';
 import Link from 'next/link';
 import axios from 'axios';
-import {useRouter} from 'next/navigation'
+import {useRouter} from 'next/navigation';
 
 
 interface Params {
@@ -17,16 +17,20 @@ interface CommentProps {
     nickname: string,
     createDate: string,
     editEnable: boolean,
-}
+    likeCount: number,
+    badCount: number,
+  }
   
 interface PostProps {
     boardId: number,
     title: string,
     nickname: string,
     createDate: string,
-    viewCount: number;
+    viewCount: number,
     editEnable: boolean,
-    content: string
+    content: string,
+    likeCount: number,
+    badCount: number,
 }
 
 const BoardDetailPage = ({ params }: { params: { boardId: number } }) => {
@@ -67,7 +71,7 @@ const BoardDetailPage = ({ params }: { params: { boardId: number } }) => {
 
     // 상세
     useEffect(() => {
-
+        console.log(post)
         
         axios.get(USE_BACK_URL+'/post/api/borads/' + params.boardId, {
             headers: {
@@ -123,9 +127,8 @@ const BoardDetailPage = ({ params }: { params: { boardId: number } }) => {
                 {
                     post?.editEnable === true ?
                         <>
-                            {/* <div>수정</div> */}
                             <Link href={`/board/write?id=${post.boardId}`}>수정</Link>
-                            <div className='ml-2'>삭제</div>
+                            <div className='ml-2 cursor-pointer'>삭제</div>
                         </>
                     : null
                 }
@@ -140,14 +143,20 @@ const BoardDetailPage = ({ params }: { params: { boardId: number } }) => {
                 <p className='absolute top-0 mt-3'>{post?.content}</p>
             </div>
             <div className='flex justify-evenly my-4'>
-                <div>좋아요</div>
-                <div>싫어요</div>
+                <div className='cursor-pointer'>
+                    좋아요
+                    <div className='text-center'>{post?.likeCount}</div>
+                </div>
+                <div className='cursor-pointer'>
+                    싫어요
+                    <div className='text-center'>{post?.badCount}</div>
+                </div>
             </div>
             <div className='flex justify-between'>
                 <h2 className="font-bold mb-2">댓글</h2>
                 {
                     sessionStorage.getItem('u') !== null ?
-                    <div>완료</div> :
+                    <div className='cursor-pointer'>완료</div> :
                     <></>
                 }
                 
@@ -155,7 +164,7 @@ const BoardDetailPage = ({ params }: { params: { boardId: number } }) => {
             <textarea className="top-0 border-2 border-gray-200 resize-none focus:outline-none w-full h-full p-3" placeholder={sessionStorage.getItem('u') !== null ? '댓글을 작성해 주세요.' : '로그인 후 작성이 가능합니다.'}/>
             {comments.map((comment, index) => (
                 <div key={index}>
-                    <Comment key={index} comment={comment} boardId={params.boardId} currentPage={currentPage} />
+                    <Comment key={index} comment={comment} boardId={params.boardId}/>
                 </div>
             ))}
             {

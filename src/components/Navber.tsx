@@ -2,6 +2,7 @@
 import Link from 'next/link'
 import React, { useState } from 'react'
 import NavItem from './navItem';
+import { CiMenuBurger } from "react-icons/ci";
 
 
 const Navber = () => {
@@ -18,7 +19,7 @@ const Navber = () => {
             {/* 웹 화면 */}
             <div className='flex w-full relative'>
                 <div className='text-2xl flex sm:hidden ms-3 absolute h-14'>
-                    <button onClick={handleMenu}>메</button>
+                    <button onClick={handleMenu}><CiMenuBurger /></button>
                 </div>
                 <div className='flex items-center justify-center sm:justify-between mx-10 w-full'>
                 
@@ -37,7 +38,7 @@ const Navber = () => {
                 <div className='h-full flex mt-2'>
                     <NavItem mobile setMenu={setMenu}/>
                     <div>
-                        <button onClick={handleMenu}>X</button>
+                        <button className='w-16 mt-6 text-xl' onClick={handleMenu}>X</button>
                     </div>
                 </div>
                 

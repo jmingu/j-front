@@ -4,16 +4,23 @@ import {USE_BACK_URL} from '../../../../constants'
 import axios from 'axios';
 import {useRouter} from 'next/navigation'
 import SubComment from './subComment';
+import { BiLike  } from "react-icons/bi";
+import { BiDislike  } from "react-icons/bi";
+import { BiSolidDislike } from "react-icons/bi";
+import { BiSolidLike } from "react-icons/bi";
+
 
 interface CommentProps {
   commentId: number,
   content: string,
   nickname: string,
   createDate: string,
-  editEnable: boolean
+  editEnable: boolean,
+  likeCount: number,
+  badCount: number,
 }
 
-const Comment = ({ comment, boardId,currentPage }: { comment: CommentProps, boardId: number, currentPage:number }) => {
+const Comment = ({ comment, boardId}: { comment: CommentProps, boardId: number}) => {
   const [isEdit, setIsEdit] = useState<Boolean>(false);
 
   // 대댓글
@@ -86,7 +93,7 @@ const Comment = ({ comment, boardId,currentPage }: { comment: CommentProps, boar
                     className="border rounded focus:outline-none py-1 px-2 w-[80%]"
                     defaultValue={comment.content}
                 />
-                <div onClick={handleEdit}>완료</div>
+                <div className='cursor-pointer text-sm' onClick={handleEdit}>완료</div>
             </div>
           ) : (
             <>
@@ -95,8 +102,8 @@ const Comment = ({ comment, boardId,currentPage }: { comment: CommentProps, boar
                 {
                     comment.editEnable === true ?
                         <>
-                            <div className='text-sm' onClick={handleEdit}>수정</div>
-                            <div className='ml-2 text-sm' onClick={handleDelete} >삭제</div>
+                            <div className='text-sm cursor-pointer' onClick={handleEdit}>수정</div>
+                            <div className='ml-2 text-sm cursor-pointer' onClick={handleDelete} >삭제</div>
                         </>
                     : null
                 }                         
@@ -106,13 +113,24 @@ const Comment = ({ comment, boardId,currentPage }: { comment: CommentProps, boar
         </div>
         <div className='flex text-sm'>
           <p>{comment.createDate}</p>
-          <div className='mx-3'>좋아요</div>
-          <div>싫어요</div>
+          <p className='mx-3'>{comment.nickname}</p>
+          <div className='mx-3'>
+            <div className='flex items-center'>
+              <BiLike  className='cursor-pointer'/>
+              <div className='ml-1'>{comment.likeCount}</div>
+            </div>
+          </div>
+          <div>
+            <div className='flex items-center'>
+              <BiDislike  className='cursor-pointer'/>
+              <div className='ml-1'>{comment.badCount}</div>
+            </div>
+          </div>
         </div>
       </div>
       {subComments.map((subComment, subIndex) => ( 
             <div key={subIndex}>
-                <div className='ml-3 flex'>
+                <div className='ml-2 flex'>
                     <div>└</div>
                     <div className='w-full'>
                         <SubComment key={subIndex} comment={subComment}/>
