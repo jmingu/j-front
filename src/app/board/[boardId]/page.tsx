@@ -19,6 +19,8 @@ interface CommentProps {
     editEnable: boolean,
     likeCount: number,
     badCount: number,
+    likeClick: boolean,
+    badClick: boolean
   }
   
 interface PostProps {
@@ -31,6 +33,8 @@ interface PostProps {
     content: string,
     likeCount: number,
     badCount: number,
+    likeClick: boolean,
+    badClick: boolean
 }
 
 const BoardDetailPage = ({ params }: { params: { boardId: number } }) => {

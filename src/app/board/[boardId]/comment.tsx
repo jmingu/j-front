@@ -18,6 +18,8 @@ interface CommentProps {
   editEnable: boolean,
   likeCount: number,
   badCount: number,
+  likeClick: boolean,
+  badClick: boolean
 }
 
 const Comment = ({ comment, boardId}: { comment: CommentProps, boardId: number}) => {
@@ -116,13 +118,19 @@ const Comment = ({ comment, boardId}: { comment: CommentProps, boardId: number})
           <p className='mx-3'>{comment.nickname}</p>
           <div className='mx-3'>
             <div className='flex items-center'>
-              <BiLike  className='cursor-pointer'/>
+              {comment.likeClick === true ? 
+               <BiSolidLike  className='cursor-pointer'/> :
+               <BiLike  className='cursor-pointer'/>
+              }
               <div className='ml-1'>{comment.likeCount}</div>
             </div>
           </div>
           <div>
             <div className='flex items-center'>
-              <BiDislike  className='cursor-pointer'/>
+              {comment.badClick === true ? 
+                <BiSolidDislike  className='cursor-pointer'/> :
+                <BiDislike  className='cursor-pointer'/>
+              }
               <div className='ml-1'>{comment.badCount}</div>
             </div>
           </div>
