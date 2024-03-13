@@ -34,7 +34,7 @@ interface PostProps {
     likeCount: number,
     badCount: number,
     likeClick: boolean,
-    badClick: boolean
+    badClick: boolean,
 }
 
 const BoardDetailPage = ({ params }: { params: { boardId: number } }) => {
@@ -75,7 +75,6 @@ const BoardDetailPage = ({ params }: { params: { boardId: number } }) => {
 
     // 상세
     useEffect(() => {
-        console.log(post)
         
         axios.get(USE_BACK_URL+'/post/api/borads/' + params.boardId, {
             headers: {
@@ -119,8 +118,33 @@ const BoardDetailPage = ({ params }: { params: { boardId: number } }) => {
             router.push("/error");
             console.error(error); // 에러 로깅
         });
-    }, [currentPage]); // currentPage에 대한 의존성을 가지고 있습니다.
+    }, [currentPage]); 
 
+
+    // 댓글
+    useEffect(() => {
+
+        
+    }, [post?.likeClick]);
+
+    const handleLikeBadClick = (value: string): void => {
+        
+        axios.post(USE_BACK_URL+'/post/api/borads/'+ post?.boardId +'/' + value,{}, {
+            headers: {
+                'Authorization': 'Bearer '+ sessionStorage.getItem('k'),
+                'Content-Type': 'application/json'
+            }
+        })
+        .then( response => {
+            if(response.status === 200){
+                console.log("click ==> " + response.data.result);
+    
+            }
+        })
+        .catch(error => {
+            console.error(error); // 에러 로깅
+        });
+    }
 
 
     return (
@@ -147,12 +171,18 @@ const BoardDetailPage = ({ params }: { params: { boardId: number } }) => {
                 <p className='absolute top-0 mt-3'>{post?.content}</p>
             </div>
             <div className='flex justify-evenly my-4'>
-                <div className='cursor-pointer'>
-                    좋아요
+                <div className='cursor-pointer' onClick={() => handleLikeBadClick("like")}>
+                    {post?.likeClick === true ?
+                    <div className='font-black'>좋아요</div>:
+                    <div>좋아요</div>
+                    }
                     <div className='text-center'>{post?.likeCount}</div>
                 </div>
-                <div className='cursor-pointer'>
-                    싫어요
+                <div className='cursor-pointer' onClick={() => handleLikeBadClick("bad")}>
+                    {post?.badClick === true ?
+                    <div className='font-black'>싫어요</div>:
+                    <div>싫어요</div>
+                    }
                     <div className='text-center'>{post?.badCount}</div>
                 </div>
             </div>

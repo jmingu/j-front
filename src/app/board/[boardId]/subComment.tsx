@@ -1,5 +1,7 @@
 "use client"
 import React, {useState } from 'react'
+import {USE_BACK_URL} from '../../../../constants'
+import axios from 'axios';
 import { BiLike  } from "react-icons/bi";
 import { BiDislike  } from "react-icons/bi";
 import { BiSolidDislike } from "react-icons/bi";
@@ -13,6 +15,8 @@ interface CommentProps {
   editEnable: boolean,
   likeCount: number,
   badCount: number,
+  likeClick: boolean,
+  badClick: boolean
 }
 
 const SubComment = ({ comment}: { comment: CommentProps}) => {
@@ -36,6 +40,24 @@ const SubComment = ({ comment}: { comment: CommentProps}) => {
     if(window.confirm("정말로 삭제하시겠습니까?")) {
       alert("삭제되었습니다.");
     }
+  }
+
+  const handleLikeBadClick = (value: string): void => {
+        
+    axios.post(USE_BACK_URL+'/post/api/comments/'+ comment.commentId +'/' + value,{}, {
+        headers: {
+            'Authorization': 'Bearer '+ sessionStorage.getItem('k'),
+            'Content-Type': 'application/json'
+        }
+    })
+    .then( response => {
+        if(response.status === 200){
+
+        }
+    })
+    .catch(error => {
+        console.error(error); // 에러 로깅
+    });
   }
 
 
@@ -73,13 +95,19 @@ const SubComment = ({ comment}: { comment: CommentProps}) => {
           <p className='mx-3'>{comment.nickname}</p>
           <div className='mx-3'>
             <div className='flex items-center'>
-              <BiLike  className='cursor-pointer'/>
+              {comment.likeClick === true ? 
+                <BiSolidLike  className='cursor-pointer' onClick={() => handleLikeBadClick("like")}/> :
+                <BiLike  className='cursor-pointer' onClick={() => handleLikeBadClick("like")}/>
+              }
               <div className='ml-1'>{comment.likeCount}</div>
             </div>
           </div>
           <div>
             <div className='flex items-center'>
-              <BiDislike  className='cursor-pointer'/>
+              {comment.badClick === true ? 
+                <BiSolidDislike  className='cursor-pointer' onClick={() => handleLikeBadClick("bad")}/> :
+                <BiDislike  className='cursor-pointer' onClick={() => handleLikeBadClick("bad")}/>
+              }
               <div className='ml-1'>{comment.badCount}</div>
             </div>
           </div>
