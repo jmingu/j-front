@@ -23,6 +23,10 @@ interface CommentProps {
 }
 
 const Comment = ({ comment, boardId}: { comment: CommentProps, boardId: number}) => {
+
+  // 댓글
+  const [comments, setComments] = useState<CommentProps>(comment);
+  
   const [isEdit, setIsEdit] = useState<Boolean>(false);
 
   // 대댓글
@@ -55,8 +59,8 @@ const Comment = ({ comment, boardId}: { comment: CommentProps, boardId: number})
   // 대댓글
   useEffect(() => {
     // currentPage가 변경될 때마다 실행될 comment 함수 호출
-
-    axios.get(USE_BACK_URL+'/post/api/borads/' + boardId + "/comments?commentId=" + comment.commentId + "&page=" + subCurrentPage, {
+    
+    axios.get(USE_BACK_URL+'/post/api/borads/' + boardId + "/comments?commentId=" + comments?.commentId + "&page=" + subCurrentPage, {
         headers: {
             'Authorization': 'Bearer '+ sessionStorage.getItem('k'),
             'Content-Type': 'application/json'
@@ -86,19 +90,21 @@ const Comment = ({ comment, boardId}: { comment: CommentProps, boardId: number})
 
   const handleLikeBadClick = (value: string): void => {
         
-    axios.post(USE_BACK_URL+'/post/api/comments/'+ comment.commentId +'/' + value,{}, {
+    axios.post(USE_BACK_URL+'/post/api/comments/'+ comments.commentId +'/' + value,{}, {
         headers: {
             'Authorization': 'Bearer '+ sessionStorage.getItem('k'),
             'Content-Type': 'application/json'
         }
     })
     .then( response => {
+      
         if(response.status === 200){
-
+          setComments(response.data.result.comment);
         }
     })
     .catch(error => {
-        console.error(error); // 에러 로깅
+        
+        alert(error.response.data.resultMessage);
     });
   }
     
@@ -106,21 +112,21 @@ const Comment = ({ comment, boardId}: { comment: CommentProps, boardId: number})
   return (
     <>
       <div className='ml-4 mb-2 mt-3'>
-        <div key={comment.commentId} className="flex justify-between">
+        <div key={comments.commentId} className="flex justify-between">
           {isEdit ? (
             <div className='flex justify-between w-full'>
                 <input 
                     className="border rounded focus:outline-none py-1 px-2 w-[80%]"
-                    defaultValue={comment.content}
+                    defaultValue={comments.content}
                 />
                 <div className='cursor-pointer text-sm' onClick={handleEdit}>완료</div>
             </div>
           ) : (
             <>
-                <p>{comment.content}</p>
+                <p>{comments.content}</p>
                 <div className="flex">
                 {
-                    comment.editEnable === true ?
+                    comments.editEnable === true ?
                         <>
                             <div className='text-sm cursor-pointer' onClick={handleEdit}>수정</div>
                             <div className='ml-2 text-sm cursor-pointer' onClick={handleDelete} >삭제</div>
@@ -132,24 +138,24 @@ const Comment = ({ comment, boardId}: { comment: CommentProps, boardId: number})
           )}
         </div>
         <div className='flex text-sm'>
-          <p>{comment.createDate}</p>
-          <p className='mx-3'>{comment.nickname}</p>
+          <p>{comments.createDate}</p>
+          <p className='mx-3'>{comments.nickname}</p>
           <div className='mx-3'>
             <div className='flex items-center'>
-              {comment.likeClick === true ? 
+              {comments.likeClick === true ? 
                <BiSolidLike  className='cursor-pointer' onClick={() => handleLikeBadClick("like")}/> :
                <BiLike  className='cursor-pointer' onClick={() => handleLikeBadClick("like")}/>
               }
-              <div className='ml-1'>{comment.likeCount}</div>
+              <div className='ml-1'>{comments.likeCount}</div>
             </div>
           </div>
           <div>
             <div className='flex items-center'>
-              {comment.badClick === true ? 
+              {comments.badClick === true ? 
                 <BiSolidDislike  className='cursor-pointer' onClick={() => handleLikeBadClick("bad")}/> :
                 <BiDislike  className='cursor-pointer' onClick={() => handleLikeBadClick("bad")}/>
               }
-              <div className='ml-1'>{comment.badCount}</div>
+              <div className='ml-1'>{comments.badCount}</div>
             </div>
           </div>
         </div>

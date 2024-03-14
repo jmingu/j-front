@@ -71,11 +71,12 @@ const BoardDetailPage = ({ params }: { params: { boardId: number } }) => {
         setCurrentPage(pageNumber);
     };
 
-
-
     // 상세
-    useEffect(() => {
-        
+    useEffect(() => {  
+        boardDetail();
+    }, []);
+    
+    const boardDetail = () => {
         axios.get(USE_BACK_URL+'/post/api/borads/' + params.boardId, {
             headers: {
                 'Authorization': 'Bearer '+ sessionStorage.getItem('k'),
@@ -84,17 +85,14 @@ const BoardDetailPage = ({ params }: { params: { boardId: number } }) => {
         })
         .then( response => {
             if(response.status === 200){
-    
                 setPost(response.data.result);
-                
             }
         })
         .catch(error => {
             router.push("/error");
             console.error(error); // 에러 로깅
         });
-    
-    }, []); // 이 훅은 컴포넌트가 마운트될 때 한 번만 실행됩니다.
+    }
     
     // 댓글
     useEffect(() => {
@@ -120,13 +118,7 @@ const BoardDetailPage = ({ params }: { params: { boardId: number } }) => {
         });
     }, [currentPage]); 
 
-
-    // 댓글
-    useEffect(() => {
-
-        
-    }, [post?.likeClick]);
-
+    // 좋아요 / 싫어요 클릭
     const handleLikeBadClick = (value: string): void => {
         
         axios.post(USE_BACK_URL+'/post/api/borads/'+ post?.boardId +'/' + value,{}, {
@@ -136,13 +128,15 @@ const BoardDetailPage = ({ params }: { params: { boardId: number } }) => {
             }
         })
         .then( response => {
+           
             if(response.status === 200){
-                console.log("click ==> " + response.data.result);
+
+                setPost(response.data.result.boardDetail);
     
             }
         })
         .catch(error => {
-            console.error(error); // 에러 로깅
+            alert(error.response.data.resultMessage);
         });
     }
 

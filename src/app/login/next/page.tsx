@@ -14,58 +14,55 @@ interface UserProps {
 }
 
 const NextPage = () => {
-    const router = useRouter()
-    const searchParams = useSearchParams();
-    const [userData, setUserData] = useState<UserProps | null>(null);
- 
-    useEffect(() => {
-      const searchCode = searchParams.get('code')
-      const searchState = searchParams.get('state')
+  const router = useRouter();
+  const [searchParams, setSearchParams] = useState(new URLSearchParams(window.location.search));
+  const [userData, setUserData] = useState(null);
 
-      // ...
-      axios.get(USE_BACK_URL + '/user/api/oauth/login/naver?code=' + searchCode + '&state=' + searchState,{
-        headers: {
-          'Authorization': 'Bearer noBearer' ,
-          'Content-Type': 'application/json'
-        }
-      })
-        .then( response => {
+  useEffect(() => {
+      const fetchData = async () => {
+          const searchCode = searchParams.get('code');
+          const searchState = searchParams.get('state');
 
-          if(response.status === 200) {
-            sessionStorage.setItem('k', response.data.result.accessToken);
-            localStorage.setItem('p', response.data.result.refreshToken);
-            
-            const tokenData = response.data.result.accessToken;
- 
-            axios.get(USE_BACK_URL+'/user/api/user/token', {
-              headers: {
-                  'Authorization': 'Bearer '+ tokenData,
-                  'Content-Type': 'application/json'
+          try {
+              const response = await axios.get(`${USE_BACK_URL}/user/api/oauth/login/naver?code=${searchCode}&state=${searchState}`, {
+                  headers: {
+                      'Authorization': 'Bearer noBearer',
+                      'Content-Type': 'application/json'
+                  }
+              });
+
+              if (response.status === 200) {
+                  sessionStorage.setItem('k', response.data.result.accessToken);
+                  localStorage.setItem('p', response.data.result.refreshToken);
+                  
+                  const tokenData = response.data.result.accessToken;
+
+                  const userResponse = await axios.get(`${USE_BACK_URL}/user/api/user/token`, {
+                      headers: {
+                          'Authorization': 'Bearer ' + tokenData,
+                          'Content-Type': 'application/json'
+                      }
+                  });
+
+                  if (userResponse.status === 200) {
+                      sessionStorage.setItem('u', JSON.stringify(userResponse.data.result));
+                      setUserData(userResponse.data.result);
+                  }
+
+                  window.location.href = "/login";
               }
-            })
-            .then( response => {
-              if(response.status === 200){
-                  sessionStorage.setItem('u', JSON.stringify(response.data.result));
-                  setUserData(response.data.result);
-              }
-            })
-            .catch(error => {
+          } catch (error) {
               router.push("/error");
               console.error(error); // 에러 로깅
-            });
-            
-            location.href = "/login";
           }
-        })
-        .catch(error => {
-          router.push("/error");
-          console.error(error); // 에러 로깅
-        });
-    }, []);
+      };
+
+      fetchData();
+  }, []);
 
   return (
-    <></>
-  )
+      <></>
+  );
 }
 
 export default NextPage
