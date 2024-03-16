@@ -50,6 +50,8 @@ const BoardDetailPage = ({ params }: { params: { boardId: number } }) => {
     const itemPage = 2; // 한 페이지에 표시할 게시물 개수
     const [currentPage, setCurrentPage] = useState<number>(1); // 현재 페이지
 
+    const [inputValue, setInputValue] = useState<string | null>(null);
+
     // 이전 페이지로 이동
     const goToPreviousPage = (): void => {
         if(currentPage !== 1){
@@ -73,10 +75,6 @@ const BoardDetailPage = ({ params }: { params: { boardId: number } }) => {
 
     // 상세
     useEffect(() => {  
-        boardDetail();
-    }, []);
-    
-    const boardDetail = () => {
         axios.get(USE_BACK_URL+'/post/api/borads/' + params.boardId, {
             headers: {
                 'Authorization': 'Bearer '+ sessionStorage.getItem('k'),
@@ -92,11 +90,39 @@ const BoardDetailPage = ({ params }: { params: { boardId: number } }) => {
             router.push("/error");
             console.error(error); // 에러 로깅
         });
+    }, []);
+    
+    // 등록
+    const handleCreate = () =>{
+        if(window.confirm("등록하시겠습니까?")) {
+            axios.post(USE_BACK_URL+'/post/api/borads/'+ params.boardId +'/comments',{
+                content : inputValue
+            }, 
+            {
+                headers: {
+                    'Authorization': 'Bearer '+ sessionStorage.getItem('k'),
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then( response => {
+                if(response.status === 200){
+                    setInputValue(null);
+                    alert("등록되었습니다.");
+                    commentList();
+                }
+            })
+            .catch(error => {
+                alert(error.response.data.resultMessage);
+            });
+        }      
     }
     
     // 댓글
     useEffect(() => {
+        commentList();
+    }, [currentPage]);
 
+    const commentList = () => {
         setComments([])
         axios.get(USE_BACK_URL+'/post/api/borads/' + params.boardId + "/comments?page=" + currentPage, {
             headers: {
@@ -116,7 +142,7 @@ const BoardDetailPage = ({ params }: { params: { boardId: number } }) => {
             router.push("/error");
             console.error(error); // 에러 로깅
         });
-    }, [currentPage]); 
+    }
 
     // 좋아요 / 싫어요 클릭
     const handleLikeBadClick = (value: string): void => {
@@ -184,15 +210,20 @@ const BoardDetailPage = ({ params }: { params: { boardId: number } }) => {
                 <h2 className="font-bold mb-2">댓글</h2>
                 {
                     sessionStorage.getItem('u') !== null ?
-                    <div className='cursor-pointer'>완료</div> :
-                    <></>
+                    <div className='cursor-pointer' onClick={handleCreate}>완료</div> :
+                    null
                 }
                 
             </div>
-            <textarea className="top-0 border-2 border-gray-200 resize-none focus:outline-none w-full h-full p-3" placeholder={sessionStorage.getItem('u') !== null ? '댓글을 작성해 주세요.' : '로그인 후 작성이 가능합니다.'}/>
+            <textarea 
+                className="top-0 border-2 border-gray-200 resize-none focus:outline-none w-full h-full p-3" 
+                placeholder={sessionStorage.getItem('u') !== null ? '댓글을 작성해 주세요.' : '로그인 후 작성이 가능합니다.'}
+                value={inputValue||""}
+                onChange={(e) => setInputValue(e.target.value)}
+            />
             {comments.map((comment, index) => (
                 <div key={index}>
-                    <Comment key={index} comment={comment} boardId={params.boardId}/>
+                    <Comment key={index} comment={comment} boardId={params.boardId} commentList={commentList}/>
                 </div>
             ))}
             {

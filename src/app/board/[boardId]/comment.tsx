@@ -22,12 +22,14 @@ interface CommentProps {
   badClick: boolean
 }
 
-const Comment = ({ comment, boardId}: { comment: CommentProps, boardId: number}) => {
+const Comment = ({ comment, boardId, commentList}: { comment: CommentProps, boardId: number, commentList:any}) => {
 
   // 댓글
-  const [comments, setComments] = useState<CommentProps>(comment);
+  const [comments, setComments] = useState<CommentProps|null>(comment);
   
   const [isEdit, setIsEdit] = useState<Boolean>(false);
+
+  const [inputValue, setInputValue] = useState(comment.content); // 초기값을 comment.content로 설정
 
   // 대댓글
   const [subComments, setSubComments] =  useState<CommentProps[]>([]);
@@ -35,12 +37,36 @@ const Comment = ({ comment, boardId}: { comment: CommentProps, boardId: number})
   const subPage = 2; // 한 페이지에 표시할 게시물 개수
   const [subCurrentPage, setSubCurrentPage] = useState<number>(1); // 현재 페이지
 
+
+
   // 수정
   const handleEdit = () => {
     // 완료일때
     if(isEdit){
-      setIsEdit(false);
-      alert("수정되었습니다.");
+
+      if(window.confirm("수정하시겠습니까?")) {
+        setIsEdit(false); 
+        axios.patch(USE_BACK_URL+'/post/api/comments/'+ comments?.commentId,{
+          content: inputValue,
+        }, 
+        {
+          headers: {
+              'Authorization': 'Bearer '+ sessionStorage.getItem('k'),
+              'Content-Type': 'application/json'
+          }
+        })
+        .then( response => {
+          
+            if(response.status === 200){
+              alert("수정되었습니다.");
+              setComments(response.data.result.comment);
+              
+            }
+        })
+        .catch(error => {
+            alert(error.response.data.resultMessage);
+        });
+      }
     }
     // 수정일때
     else{
@@ -48,10 +74,33 @@ const Comment = ({ comment, boardId}: { comment: CommentProps, boardId: number})
     }
   }
 
+  // 취소
+  const handleCancle = () => {
+    setIsEdit(false);
+  }
+
   // 삭제
   const handleDelete = () => {
-    if(window.confirm("정말로 삭제하시겠습니까?")) {
-      alert("삭제되었습니다.");
+    if(window.confirm("삭제하시겠습니까?")) {
+      setIsEdit(false); 
+      axios.delete(USE_BACK_URL+'/post/api/comments/'+ comments?.commentId,
+      {
+        headers: {
+            'Authorization': 'Bearer '+ sessionStorage.getItem('k'),
+            'Content-Type': 'application/json'
+        }
+      })
+      .then( response => {
+        
+          if(response.status === 200){
+            alert("삭제되었습니다.");
+            commentList();
+            
+          }
+      })
+      .catch(error => {
+          alert(error.response.data.resultMessage);
+      });
     }
   }
 
@@ -80,6 +129,7 @@ const Comment = ({ comment, boardId}: { comment: CommentProps, boardId: number})
           console.error(error); // 에러 로깅
       });
   }, [subCurrentPage]);
+  
 
   // "더보기" 클릭 시 실행될 함수
   const handleLoadMoreSubComments = () => {
@@ -90,11 +140,11 @@ const Comment = ({ comment, boardId}: { comment: CommentProps, boardId: number})
 
   const handleLikeBadClick = (value: string): void => {
         
-    axios.post(USE_BACK_URL+'/post/api/comments/'+ comments.commentId +'/' + value,{}, {
-        headers: {
-            'Authorization': 'Bearer '+ sessionStorage.getItem('k'),
-            'Content-Type': 'application/json'
-        }
+    axios.post(USE_BACK_URL+'/post/api/comments/'+ comments?.commentId +'/' + value,{}, {
+      headers: {
+          'Authorization': 'Bearer '+ sessionStorage.getItem('k'),
+          'Content-Type': 'application/json'
+      }
     })
     .then( response => {
       
@@ -107,57 +157,66 @@ const Comment = ({ comment, boardId}: { comment: CommentProps, boardId: number})
         alert(error.response.data.resultMessage);
     });
   }
-    
-
+  
   return (
     <>
       <div className='ml-4 mb-2 mt-3'>
-        <div key={comments.commentId} className="flex justify-between">
+        <div className='text-sm flex text-gray-800'>
+          <p>{comments?.createDate}</p>
+          <p className='mx-2'>{comments?.nickname === null ? "무명" : comments?.nickname}</p>
+        </div>         
+        <div key={comments?.commentId} className="flex justify-between">
           {isEdit ? (
             <div className='flex justify-between w-full'>
                 <input 
-                    className="border rounded focus:outline-none py-1 px-2 w-[80%]"
-                    defaultValue={comments.content}
+                    className="border rounded focus:outline-none py-1 px-2 w-full"
+                    defaultValue={comments?.content}
+                    onChange={(e) => setInputValue(e.target.value)}
                 />
-                <div className='cursor-pointer text-sm' onClick={handleEdit}>완료</div>
+                
             </div>
           ) : (
             <>
-                <p>{comments.content}</p>
-                <div className="flex">
-                {
-                    comments.editEnable === true ?
-                        <>
-                            <div className='text-sm cursor-pointer' onClick={handleEdit}>수정</div>
-                            <div className='ml-2 text-sm cursor-pointer' onClick={handleDelete} >삭제</div>
-                        </>
-                    : null
-                }                         
-                </div>
+              <p className='break-all'>{comments?.content}</p>
             </>
           )}
         </div>
-        <div className='flex text-sm'>
-          <p>{comments.createDate}</p>
-          <p className='mx-3'>{comments.nickname}</p>
-          <div className='mx-3'>
-            <div className='flex items-center'>
-              {comments.likeClick === true ? 
-               <BiSolidLike  className='cursor-pointer' onClick={() => handleLikeBadClick("like")}/> :
-               <BiLike  className='cursor-pointer' onClick={() => handleLikeBadClick("like")}/>
-              }
-              <div className='ml-1'>{comments.likeCount}</div>
+        <div className='flex justify-between text-sm'>
+          <div className='flex'>
+            <div className='mx-2'>
+              <div className='flex items-center'>
+                {comments?.likeClick === true ? 
+                <BiSolidLike  className='cursor-pointer' onClick={() => handleLikeBadClick("like")}/> :
+                <BiLike  className='cursor-pointer' onClick={() => handleLikeBadClick("like")}/>
+                }
+                <div className='ml-1'>{comments?.likeCount}</div>
+              </div>
+            </div>
+            <div>
+              <div className='flex items-center'>
+                {comments?.badClick === true ? 
+                  <BiSolidDislike  className='cursor-pointer' onClick={() => handleLikeBadClick("bad")}/> :
+                  <BiDislike  className='cursor-pointer' onClick={() => handleLikeBadClick("bad")}/>
+                }
+                <div className='ml-1'>{comments?.badCount}</div>
+              </div>
             </div>
           </div>
-          <div>
-            <div className='flex items-center'>
-              {comments.badClick === true ? 
-                <BiSolidDislike  className='cursor-pointer' onClick={() => handleLikeBadClick("bad")}/> :
-                <BiDislike  className='cursor-pointer' onClick={() => handleLikeBadClick("bad")}/>
-              }
-              <div className='ml-1'>{comments.badCount}</div>
+          <div className="flex">
+          {
+            isEdit ? 
+            <>
+              <div className='cursor-pointer text-sm' onClick={handleEdit}>완료</div>
+              <div className='ml-2 cursor-pointer text-sm' onClick={handleCancle}>취소</div>
+            </>:
+              comments?.editEnable === true ?
+                  <>
+                      <div className='text-sm cursor-pointer' onClick={handleEdit}>수정</div>
+                      <div className='ml-2 text-sm cursor-pointer' onClick={handleDelete} >삭제</div>
+                  </>
+              : null    
+          }                            
             </div>
-          </div>
         </div>
       </div>
       {subComments.map((subComment, subIndex) => ( 
@@ -165,7 +224,7 @@ const Comment = ({ comment, boardId}: { comment: CommentProps, boardId: number})
                 <div className='ml-2 flex'>
                     <div>└</div>
                     <div className='w-full'>
-                        <SubComment key={subIndex} comment={subComment}/>
+                      <SubComment key={subIndex} comment={subComment}/>
                     </div>
                 </div>
             </div>
