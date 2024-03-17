@@ -19,7 +19,7 @@ interface CommentProps {
   badClick: boolean
 }
 
-const SubComment = ({comment}: {comment: CommentProps}) => {
+const SubComment = ({comment, subCommentList}: {comment: CommentProps, subCommentList:any}) => {
 
   // 대댓글
   const [subComments, setSubComments] = useState<CommentProps>(comment);
@@ -69,8 +69,26 @@ const SubComment = ({comment}: {comment: CommentProps}) => {
 
   // 삭제
   const handleDelete = () => {
-    if(window.confirm("정말로 삭제하시겠습니까?")) {
-      alert("삭제되었습니다.");
+    if(window.confirm("삭제하시겠습니까?")) {
+      setIsEdit(false); 
+      axios.delete(USE_BACK_URL+'/post/api/comments/'+ subComments?.commentId,
+      {
+        headers: {
+            'Authorization': 'Bearer '+ sessionStorage.getItem('k'),
+            'Content-Type': 'application/json'
+        }
+      })
+      .then( response => {
+        
+          if(response.status === 200){
+            alert("삭제되었습니다.");
+            subCommentList();
+            
+          }
+      })
+      .catch(error => {
+          alert(error.response.data.resultMessage);
+      });
     }
   }
 

@@ -107,28 +107,33 @@ const Comment = ({ comment, boardId, commentList}: { comment: CommentProps, boar
 
   // 대댓글
   useEffect(() => {
-    // currentPage가 변경될 때마다 실행될 comment 함수 호출
+    subCommentList();
     
+  }, [subCurrentPage]);
+
+  const subCommentList = () => {
+
     axios.get(USE_BACK_URL+'/post/api/borads/' + boardId + "/comments?commentId=" + comments?.commentId + "&page=" + subCurrentPage, {
-        headers: {
-            'Authorization': 'Bearer '+ sessionStorage.getItem('k'),
-            'Content-Type': 'application/json'
-        }
+      headers: {
+        'Authorization': 'Bearer '+ sessionStorage.getItem('k'),
+        'Content-Type': 'application/json'
+      }
     })
     .then( response => {
-        if(response.status === 200){
-          
-           // 기존 대댓글 목록에 새로운 대댓글 목록을 추가
-            setSubComments(prevComments => [...prevComments, ...response.data.result.commentList]);
-            setSubTotalPages(Math.ceil((response.data.result.totalComment)/subPage));
+      if(response.status === 200){
+        
+        // 기존 대댓글 목록에 새로운 대댓글 목록을 추가
+        setSubComments(prevComments => [...prevComments, ...response.data.result.commentList]);
+        setSubTotalPages(Math.ceil((response.data.result.totalComment)/subPage));
 
-        }
-      })
-      .catch(error => {
-          // router.push("/error");
-          console.error(error); // 에러 로깅
-      });
-  }, [subCurrentPage]);
+      }
+    })
+    .catch(error => {
+      // router.push("/error");
+      console.error(error); // 에러 로깅
+    });
+
+  }
   
 
   // "더보기" 클릭 시 실행될 함수
@@ -224,7 +229,7 @@ const Comment = ({ comment, boardId, commentList}: { comment: CommentProps, boar
                 <div className='ml-2 flex'>
                     <div>└</div>
                     <div className='w-full'>
-                      <SubComment key={subIndex} comment={subComment}/>
+                      <SubComment key={subIndex} comment={subComment} subCommentList={subCommentList}/>
                     </div>
                 </div>
             </div>

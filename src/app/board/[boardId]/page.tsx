@@ -166,6 +166,27 @@ const BoardDetailPage = ({ params }: { params: { boardId: number } }) => {
         });
     }
 
+    const handleDelete = () => {
+        if(window.confirm("삭제하시겠습니까?")) {
+            axios.delete(USE_BACK_URL+'/post/api/borads/'+ params.boardId,
+            {
+                headers: {
+                    'Authorization': 'Bearer '+ sessionStorage.getItem('k'),
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then( response => {
+                if(response.status === 200){
+                    alert("삭제되었습니다.");
+                    router.push("/board");     
+                }
+            })
+            .catch(error => {
+                alert(error.response.data.resultMessage);
+            });
+        }     
+    }
+
 
     return (
         <div className="max-w-3xl mx-auto p-2">
@@ -176,7 +197,7 @@ const BoardDetailPage = ({ params }: { params: { boardId: number } }) => {
                     post?.editEnable === true ?
                         <>
                             <Link href={`/board/write?id=${post.boardId}`}>수정</Link>
-                            <div className='ml-2 cursor-pointer'>삭제</div>
+                            <div className='ml-2 cursor-pointer' onClick={handleDelete}>삭제</div>
                         </>
                     : null
                 }
