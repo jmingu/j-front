@@ -5,6 +5,7 @@ import axios from 'axios';
 import {USE_FRONT_URL} from '../../../constants';
 import {USE_BACK_URL} from '../../../constants';
 import {useRouter} from 'next/navigation';
+import { log } from 'console';
 
 interface UserProps {
     email: string,
@@ -66,8 +67,10 @@ const LoginPage = () => {
                 window.location.href = "/";
             }
         
-        } catch (error) {
-            router.push("/error");
+        } catch (error:any) {
+            
+            alert(error.response.data.resultMessage)
+            
         }
     }
     
@@ -100,8 +103,7 @@ const LoginPage = () => {
             <div className='text-center'>
                 <div className='mt-5'>
                 <Link href={`https://nid.naver.com/oauth2.0/authorize?client_id=wuAWZWv8noa7LcgEUPRd&response_type=code&redirect_uri=${redirectUri}`} legacyBehavior>네이버 로그인</Link>
-                </div>
-                <div className='text-xs mt-5'>네이버 외 SNS로그인 업데이트 예정</div>    
+                </div>    
             </div>
             
             

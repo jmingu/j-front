@@ -191,7 +191,7 @@ const BoardDetailPage = ({ params }: { params: { boardId: number } }) => {
     return (
         <div className="max-w-3xl mx-auto p-2">
             <div className='flex justify-between'>
-                <h1 className='font-bold mb-4'>{post?.title}</h1>
+                <h1 className='mb-4'>{post?.title}</h1>
                 <div className="flex">
                 {
                     post?.editEnable === true ?
@@ -228,10 +228,10 @@ const BoardDetailPage = ({ params }: { params: { boardId: number } }) => {
                 </div>
             </div>
             <div className='flex justify-between'>
-                <h2 className="font-bold mb-2">댓글</h2>
+                <h2 className="mb-2">댓글</h2>
                 {
                     sessionStorage.getItem('u') !== null ?
-                    <div className='cursor-pointer' onClick={handleCreate}>완료</div> :
+                    <div className='cursor-pointer font-bold' onClick={handleCreate}>완료</div> :
                     null
                 }
                 

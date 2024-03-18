@@ -46,12 +46,15 @@ const JoinPage = () => {
 
         if(loginIdCheck === false){
             alert("아이디 중복검사를 해주세요.");
+            return false;
         }
         if(password !== passwordCheck){
             alert("비밀번호가 일치하지 않습니다.");
+            return false;
         }
         if(emailCheck() === false){
             alert("이메일 확인을 해주세요.");
+            return false;
         }
 
         axios.post(USE_BACK_URL+'/user/api/user/join',{

@@ -37,7 +37,7 @@ const Comment = ({ comment, boardId, commentList}: { comment: CommentProps, boar
   const subPage = 2; // 한 페이지에 표시할 게시물 개수
   const [subCurrentPage, setSubCurrentPage] = useState<number>(1); // 현재 페이지
 
-
+  const [subCommentInput, setSubCommentInput] = useState<string | null>(null);
 
   // 수정
   const handleEdit = () => {
@@ -113,6 +113,7 @@ const Comment = ({ comment, boardId, commentList}: { comment: CommentProps, boar
 
   const subCommentList = () => {
 
+
     axios.get(USE_BACK_URL+'/post/api/borads/' + boardId + "/comments?commentId=" + comments?.commentId + "&page=" + subCurrentPage, {
       headers: {
         'Authorization': 'Bearer '+ sessionStorage.getItem('k'),
@@ -121,7 +122,7 @@ const Comment = ({ comment, boardId, commentList}: { comment: CommentProps, boar
     })
     .then( response => {
       if(response.status === 200){
-        
+
         // 기존 대댓글 목록에 새로운 대댓글 목록을 추가
         setSubComments(prevComments => [...prevComments, ...response.data.result.commentList]);
         setSubTotalPages(Math.ceil((response.data.result.totalComment)/subPage));
@@ -134,6 +135,50 @@ const Comment = ({ comment, boardId, commentList}: { comment: CommentProps, boar
     });
 
   }
+
+  // 대댓글 완료
+  const handleCreate = () => {
+    
+    if(window.confirm("등록하시겠습니까?")) {
+      axios.post(USE_BACK_URL+'/post/api/borads/'+ boardId +'/comments',{
+          content : subCommentInput,
+          parentCommentId : comments?.commentId
+      }, 
+      {
+          headers: {
+              'Authorization': 'Bearer '+ sessionStorage.getItem('k'),
+              'Content-Type': 'application/json'
+          }
+      })
+      .then( response => {
+        if(response.status === 200){
+          setSubCommentInput(null);
+          alert("등록되었습니다.");
+
+          setSubComments([]);
+          if(subCurrentPage === 1){
+            subCommentList()
+          }else{
+            setSubCurrentPage(1);
+          }
+         
+        }
+      })
+      .catch(error => {
+          alert(error.response.data.resultMessage);
+      });
+    }  
+  }
+
+  // 대댓글 삭제되었을 시 이벤트 감지
+  const subCommentDelete = () => {
+    setSubComments([]);
+    if(subCurrentPage === 1){
+      subCommentList()
+    }else{
+      setSubCurrentPage(1);
+    }
+  }
   
 
   // "더보기" 클릭 시 실행될 함수
@@ -143,6 +188,7 @@ const Comment = ({ comment, boardId, commentList}: { comment: CommentProps, boar
     }
   };
 
+  // 좋아요 / 싫어요
   const handleLikeBadClick = (value: string): void => {
         
     axios.post(USE_BACK_URL+'/post/api/comments/'+ comments?.commentId +'/' + value,{}, {
@@ -224,12 +270,26 @@ const Comment = ({ comment, boardId, commentList}: { comment: CommentProps, boar
             </div>
         </div>
       </div>
+      <div className='ml-2 flex justify-between items-center'>
+        <div>└</div>
+        <input 
+            className="border rounded focus:outline-none py-1 px-2 w-full ml-2"
+            placeholder={sessionStorage.getItem('u') !== null ? '대댓글을 작성해 주세요.' : '로그인 후 작성이 가능합니다.'}
+            value={subCommentInput||""}
+            onChange={(e) => setSubCommentInput(e.target.value)}
+        />
+        {
+            sessionStorage.getItem('u') !== null ?
+            <div className='ml-4 whitespace-nowrap w-[30px] cursor-pointer font-bold' onClick={handleCreate}>완료</div> :
+            <div className='ml-4 whitespace-nowrap w-[30px] cursor-pointer'></div>
+        }
+      </div>
       {subComments.map((subComment, subIndex) => ( 
             <div key={subIndex}>
                 <div className='ml-2 flex'>
                     <div>└</div>
                     <div className='w-full'>
-                      <SubComment key={subIndex} comment={subComment} subCommentList={subCommentList}/>
+                      <SubComment key={subIndex} comment={subComment} subCommentDelete={subCommentDelete}/>
                     </div>
                 </div>
             </div>
