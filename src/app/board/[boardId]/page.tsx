@@ -38,16 +38,15 @@ interface PostProps {
 }
 
 const BoardDetailPage = ({ params }: { params: { boardId: number } }) => {
-    // console.log(params.boardId);
     const router = useRouter();
     
     const [post, setPost] =  useState<PostProps>();
     
-
+    const itemPageSize = 5; // 한 페이지에 표시할 게시물 개수
     // 댓글
     const [comments, setComments] =  useState<CommentProps[]>([]);
     const [totalPages, setTotalPages] = useState(0); // 전체 페이지 개수
-    const itemPage = 2; // 한 페이지에 표시할 게시물 개수
+    
     const [currentPage, setCurrentPage] = useState<number>(1); // 현재 페이지
 
     const [inputValue, setInputValue] = useState<string | null>(null);
@@ -72,6 +71,21 @@ const BoardDetailPage = ({ params }: { params: { boardId: number } }) => {
     const goToPage = (pageNumber: number): void => {
         setCurrentPage(pageNumber);
     };
+
+    
+    // 페이지네이션
+    const calculatePageRange = () => {
+        let startPage = Math.max(1, currentPage - 2);
+        let endPage = Math.min(totalPages, startPage + 4);
+    
+        if (endPage - startPage < 4) {
+            startPage = Math.max(1, endPage - 4);
+        }
+    
+        return [startPage, endPage];
+    };
+
+    const [startPage, endPage] = calculatePageRange();
 
     // 상세
     useEffect(() => {  
@@ -124,7 +138,7 @@ const BoardDetailPage = ({ params }: { params: { boardId: number } }) => {
 
     const commentList = () => {
         setComments([])
-        axios.get(USE_BACK_URL+'/post/api/borads/' + params.boardId + "/comments?page=" + currentPage, {
+        axios.get(USE_BACK_URL+'/post/api/borads/' + params.boardId + "/comments?page=" + currentPage + '&size=' + itemPageSize, {
             headers: {
                 'Authorization': 'Bearer '+ sessionStorage.getItem('k'),
                 'Content-Type': 'application/json'
@@ -134,7 +148,7 @@ const BoardDetailPage = ({ params }: { params: { boardId: number } }) => {
             if(response.status === 200){
                 
                 setComments(response.data.result.commentList);
-                setTotalPages(Math.ceil((response.data.result.totalComment)/itemPage));
+                setTotalPages(Math.ceil((response.data.result.totalComment)/itemPageSize));
     
             }
         })
@@ -186,8 +200,7 @@ const BoardDetailPage = ({ params }: { params: { boardId: number } }) => {
             });
         }     
     }
-
-
+    
     return (
         <div className="max-w-3xl mx-auto p-2">
             <div className='flex justify-between'>
@@ -252,15 +265,15 @@ const BoardDetailPage = ({ params }: { params: { boardId: number } }) => {
                 <></> : 
                 <div className="mt-4 flex justify-center">
                     <button className="mr-2" onClick={goToPreviousPage}>이전</button>
-                        {Array.from({ length: totalPages }, (_, index) => (
-                            <button
-                                key={index}
-                                className={`mx-1 ${currentPage === index + 1 ? "font-bold" : ""}`}
-                                onClick={() => goToPage(index + 1)}
-                            >
-                                {index + 1}
-                            </button>
-                        ))}
+                    {Array.from({ length: endPage - startPage + 1 }, (_, index) => (
+                        <button
+                            key={startPage + index}
+                            className={`mx-1 ${currentPage === startPage + index ? "font-bold" : ""}`}
+                            onClick={() => goToPage(startPage + index)}
+                        >
+                            {startPage + index}
+                        </button>
+                    ))}
                     <button className="ml-2" onClick={goToNextPage}>다음</button>
                 </div>
             }

@@ -34,7 +34,7 @@ const Comment = ({ comment, boardId, commentList}: { comment: CommentProps, boar
   // 대댓글
   const [subComments, setSubComments] =  useState<CommentProps[]>([]);
   const [subTotalPages, setSubTotalPages] = useState(0); // 전체 페이지 개수
-  const subPage = 2; // 한 페이지에 표시할 게시물 개수
+  const subPageSize = 5; // 한 페이지에 표시할 게시물 개수
   const [subCurrentPage, setSubCurrentPage] = useState<number>(1); // 현재 페이지
 
   const [subCommentInput, setSubCommentInput] = useState<string | null>(null);
@@ -60,7 +60,6 @@ const Comment = ({ comment, boardId, commentList}: { comment: CommentProps, boar
             if(response.status === 200){
               alert("수정되었습니다.");
               setComments(response.data.result.comment);
-              
             }
         })
         .catch(error => {
@@ -114,7 +113,7 @@ const Comment = ({ comment, boardId, commentList}: { comment: CommentProps, boar
   const subCommentList = () => {
 
 
-    axios.get(USE_BACK_URL+'/post/api/borads/' + boardId + "/comments?commentId=" + comments?.commentId + "&page=" + subCurrentPage, {
+    axios.get(USE_BACK_URL+'/post/api/borads/' + boardId + "/comments?commentId=" + comments?.commentId + "&page=" + subCurrentPage + '&size=' + subPageSize, {
       headers: {
         'Authorization': 'Bearer '+ sessionStorage.getItem('k'),
         'Content-Type': 'application/json'
@@ -125,7 +124,7 @@ const Comment = ({ comment, boardId, commentList}: { comment: CommentProps, boar
 
         // 기존 대댓글 목록에 새로운 대댓글 목록을 추가
         setSubComments(prevComments => [...prevComments, ...response.data.result.commentList]);
-        setSubTotalPages(Math.ceil((response.data.result.totalComment)/subPage));
+        setSubTotalPages(Math.ceil((response.data.result.totalComment)/subPageSize));
 
       }
     })

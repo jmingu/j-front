@@ -45,9 +45,23 @@ const BoardPage = () => {
         setCurrentPage(pageNumber);
     };
 
+    // 페이지네이션
+    const calculatePageRange = () => {
+        let startPage = Math.max(1, currentPage - 2);
+        let endPage = Math.min(totalPages, startPage + 4);
+    
+        if (endPage - startPage < 4) {
+            startPage = Math.max(1, endPage - 4);
+        }
+    
+        return [startPage, endPage];
+    };
+
+    const [startPage, endPage] = calculatePageRange();
+
     useEffect(() => {
 
-        axios.get(USE_BACK_URL+'/post/api/borads?page=' + currentPage, {
+        axios.get(USE_BACK_URL+'/post/api/borads?page=' + currentPage + '&size=' + itemsPerPage, {
             headers: {
                 'Authorization': 'Bearer '+ sessionStorage.getItem('k'),
                 'Content-Type': 'application/json'
@@ -89,7 +103,7 @@ const BoardPage = () => {
                                         <Link href={`/board/${item.boardId}`}>
                                             {item.title}
                                         </Link>
-                                        <div className='flex'>
+                                        <div className='flex flex-wrap'>
                                             <div className="text-gray-500 text-sm"> {item.createDate}</div>
                                             <div className="text-gray-500 ml-5 text-sm"> {item.nickname}</div>
                                             <div className="text-gray-500 ml-5 text-sm">조회수 : {item.viewCount}</div>
@@ -106,15 +120,15 @@ const BoardPage = () => {
                     <></> : 
                     <div className="mt-4 flex justify-center">
                         <button className="mr-2" onClick={goToPreviousPage}>이전</button>
-                            {Array.from({ length: totalPages }, (_, index) => (
-                                <button
-                                    key={index}
-                                    className={`mx-1 ${currentPage === index + 1 ? "font-bold" : ""}`}
-                                    onClick={() => goToPage(index + 1)}
-                                >
-                                    {index + 1}
-                                </button>
-                            ))}
+                        {Array.from({ length: endPage - startPage + 1 }, (_, index) => (
+                            <button
+                                key={startPage + index}
+                                className={`mx-1 ${currentPage === startPage + index ? "font-bold" : ""}`}
+                                onClick={() => goToPage(startPage + index)}
+                            >
+                                {startPage + index}
+                            </button>
+                        ))}
                         <button className="ml-2" onClick={goToNextPage}>다음</button>
                     </div>
                 }
