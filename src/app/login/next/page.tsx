@@ -1,21 +1,22 @@
 "use client"
 
 import axios from 'axios';
-import { useSearchParams } from 'next/navigation'
-import {useRouter} from 'next/navigation'
-import React, { useEffect, useState } from 'react'
-import {USE_BACK_URL} from '../../../../constants'
+import {useRouter} from 'next/navigation';
+import React, { useEffect, useState } from 'react';
+import {USE_BACK_URL} from '../../../../constants';
+import { request } from 'http';
 
 
-const NextPage = () => {
+
+const NextPage = (request:any) => {
+
   const router = useRouter();
-  const [searchParams, setSearchParams] = useState(new URLSearchParams(window.location.search));
   const [userData, setUserData] = useState(null);
 
   useEffect(() => {
       const fetchData = async () => {
-          const searchCode = searchParams.get('code');
-          const searchState = searchParams.get('state');
+          const searchCode = request.searchParams.code;
+          const searchState = request.searchParams.state;
 
         try {
             const response = await axios.get(`${USE_BACK_URL}/user/api/oauth/login/naver?code=${searchCode}&state=${searchState}`, {

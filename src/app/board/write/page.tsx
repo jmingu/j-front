@@ -1,21 +1,19 @@
 "use client"
 import React, { useEffect, useState } from 'react'
 import {USE_BACK_URL} from '../../../../constants'
-import Link from 'next/link';
 import axios from 'axios';
 import {useRouter} from 'next/navigation'
-import { useSearchParams } from 'next/navigation'
+import { request } from 'http';
 
 
-const Write = () => {
-    const searchParams = useSearchParams()
-    const router = useRouter();
+const Write = (request:any) => {
     
+    const router = useRouter();
+
     const [title, setTitle] = useState<string>("");
     const [content, setContent] = useState<string>("");
- 
-    const search = searchParams.get('id');
-    const [param, setParam] = useState<string | null>(search);
+
+    const [param, setParam] = useState<string | null>(request.searchParams.id);
 
     // 등록
     const handleCreate = () =>{

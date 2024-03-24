@@ -24,6 +24,15 @@ const BoardPage = () => {
 
     const [currentPage, setCurrentPage] = useState<number>(1); // 현재 페이지
 
+    const [sessionToken, setSessionToken] = useState<string | null>(null);
+
+    const [sessionUser, setSessionUser] = useState<string | null>(null);
+
+    useEffect(() => {
+        setSessionToken(sessionStorage.getItem('k'));
+        setSessionUser(sessionStorage.getItem('u'));
+    });
+
     // 이전 페이지로 이동
     const goToPreviousPage = (): void => {
         if(currentPage !== 1){
@@ -63,7 +72,7 @@ const BoardPage = () => {
 
         axios.get(USE_BACK_URL+'/post/api/borads?page=' + currentPage + '&size=' + itemsPerPage, {
             headers: {
-                'Authorization': 'Bearer '+ sessionStorage.getItem('k'),
+                'Authorization': 'Bearer '+ sessionToken,
                 'Content-Type': 'application/json'
             }
         })
@@ -86,7 +95,7 @@ const BoardPage = () => {
                 <div className='flex justify-between'>
                     <h1 className="text-2xl font-bold mb-4">자유게시판</h1>
                     {
-                        sessionStorage.getItem('u') !== null ?
+                        sessionUser !== null ?
                         <div>
                             <Link href={`/board/write/ `}>글작성</Link>
                         </div> :
