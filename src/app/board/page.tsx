@@ -31,7 +31,7 @@ const BoardPage = () => {
     useEffect(() => {
         setSessionToken(sessionStorage.getItem('k'));
         setSessionUser(sessionStorage.getItem('u'));
-    });
+    },[]);
 
     // 이전 페이지로 이동
     const goToPreviousPage = (): void => {
