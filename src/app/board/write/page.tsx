@@ -5,6 +5,13 @@ import axios from 'axios';
 import {useRouter} from 'next/navigation'
 import { request } from 'http';
 
+interface UserProps {
+    email: string,
+    gender: string,
+    nickname: string,
+    userName: string
+}
+
 
 const Write = (request:any) => {
     
@@ -15,8 +22,20 @@ const Write = (request:any) => {
 
     const [param, setParam] = useState<string | null>(request.searchParams.id);
 
+    const [sessionUser, setSessionUser] = useState<UserProps | null>(null);
+
+    useEffect(() => {
+
+        const userData:any = sessionStorage.getItem('u');
+        setSessionUser(JSON.parse(userData));
+    },[]);
+
     // 등록
     const handleCreate = () =>{
+        if(sessionUser?.nickname === null || sessionUser?.nickname === undefined){
+            alert("닉네임 등록이 필요합니다.");
+            return false;
+        }
 
         if(title.length === 0){
             alert("제목을 입력해 주세요.");
@@ -88,8 +107,8 @@ const Write = (request:any) => {
     
     // 상세
     useEffect(() => {
-
-        if(param !== null){
+        
+        if(param !== null && param !== undefined){
             axios.get(USE_BACK_URL+'/post/api/borads/' + param, {
                 headers: {
                     'Authorization': 'Bearer '+ sessionStorage.getItem('k'),
@@ -117,7 +136,7 @@ const Write = (request:any) => {
             <div className="p-8 h-[60vh]">
                 <div className='flex justify-end mt-3'>
                 {
-                    param === null ? 
+                    (param === null || param === undefined) ? 
                     <button onClick={handleCreate}>완료</button>
                     :
                     <button onClick={handleEdit}>수정</button>

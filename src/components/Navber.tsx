@@ -3,6 +3,9 @@ import Link from 'next/link'
 import React, { useState } from 'react'
 import NavItem from './navItem';
 import { CiMenuBurger } from "react-icons/ci";
+import Image from 'next/image';
+import Logo from '../../public/project-j.png';
+
 
 
 const Navber = () => {
@@ -15,7 +18,7 @@ const Navber = () => {
 
 
     return (
-        <nav className='w-full bg-gray-100'>
+        <nav className='w-full bg-white'>
             {/* 웹 화면 */}
             <div className='flex w-full relative'>
                 <div className='text-2xl flex sm:hidden ms-3 absolute h-14'>
@@ -24,7 +27,11 @@ const Navber = () => {
                 <div className='flex items-center justify-center sm:justify-between mx-10 w-full'>
                 
                     <div className='flex items-center text-2xl h-14'>
-                        <Link href="/">로고자리</Link>
+                        <Link href="/">
+                            <div className='flex justify-center sm:justify-start'>
+                                <Image src={Logo} alt='로고이미지' className='max-w-[50%]'/>
+                            </div>
+                        </Link>
                     </div>
 
                     <div className='hidden sm:block'>

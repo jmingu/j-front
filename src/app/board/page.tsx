@@ -14,6 +14,13 @@ interface BoardItem {
     viewCount: number;
 }
 
+interface UserProps {
+    email: string,
+    gender: string,
+    nickname: string,
+    userName: string
+}
+
 const BoardPage = () => {
     const router = useRouter();
     
@@ -26,13 +33,15 @@ const BoardPage = () => {
 
     const [sessionToken, setSessionToken] = useState<string | null>(null);
 
-    const [sessionUser, setSessionUser] = useState<string | null>(null);
+    const [sessionUser, setSessionUser] = useState<UserProps | null>(null);
 
     useEffect(() => {
+        
         setSessionToken(sessionStorage.getItem('k'));
-        setSessionUser(sessionStorage.getItem('u'));
+        const userData:any = sessionStorage.getItem('u');
+        setSessionUser(JSON.parse(userData));
     },[]);
-
+    
     // 이전 페이지로 이동
     const goToPreviousPage = (): void => {
         if(currentPage !== 1){
@@ -95,9 +104,9 @@ const BoardPage = () => {
                 <div className='flex justify-between'>
                     <h1 className="text-2xl font-bold mb-4">자유게시판</h1>
                     {
-                        sessionUser !== null ?
+                        (sessionUser !== null && (sessionUser.nickname !== undefined && sessionUser.nickname !== undefined)) ?
                         <div>
-                            <Link href={`/board/write/ `}>글작성</Link>
+                            <Link href={`/board/write/`}>글작성</Link>
                         </div> :
                         <></>
                     }   

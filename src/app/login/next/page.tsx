@@ -10,46 +10,46 @@ import { request } from 'http';
 
 const NextPage = (request:any) => {
 
-  const router = useRouter();
-  const [userData, setUserData] = useState(null);
+    const router = useRouter();
+    const [userData, setUserData] = useState(null);
 
-  useEffect(() => {
-      const fetchData = async () => {
-          const searchCode = request.searchParams.code;
-          const searchState = request.searchParams.state;
+    useEffect(() => {
+        const fetchData = async () => {
+            const searchCode = request.searchParams.code;
+            const searchState = request.searchParams.state;
 
-        try {
-            const response = await axios.get(`${USE_BACK_URL}/user/api/oauth/login/naver?code=${searchCode}&state=${searchState}`, {
-                headers: {
-                    'Authorization': 'Bearer noBearer',
-                    'Content-Type': 'application/json'
-                }
-            });
-
-            if (response.status === 200) {
-                sessionStorage.setItem('k', response.data.result.accessToken);
-                localStorage.setItem('p', response.data.result.refreshToken);
-                
-                const tokenData = response.data.result.accessToken;
-
-                const userResponse = await axios.get(`${USE_BACK_URL}/user/api/user/token`, {
+            try {
+                const response = await axios.get(`${USE_BACK_URL}/user/api/oauth/login/naver?code=${searchCode}&state=${searchState}`, {
                     headers: {
-                        'Authorization': 'Bearer ' + tokenData,
+                        'Authorization': 'Bearer noBearer',
                         'Content-Type': 'application/json'
                     }
                 });
 
-                if (userResponse.status === 200) {
-                    sessionStorage.setItem('u', JSON.stringify(userResponse.data.result));
-                    setUserData(userResponse.data.result);
-                }
+                if (response.status === 200) {
+                    sessionStorage.setItem('k', response.data.result.accessToken);
+                    localStorage.setItem('p', response.data.result.refreshToken);
+                    
+                    const tokenData = response.data.result.accessToken;
 
-                window.location.href = "/";
+                    const userResponse = await axios.get(`${USE_BACK_URL}/user/api/user/token`, {
+                        headers: {
+                            'Authorization': 'Bearer ' + tokenData,
+                            'Content-Type': 'application/json'
+                        }
+                    });
+
+                    if (userResponse.status === 200) {
+                        sessionStorage.setItem('u', JSON.stringify(userResponse.data.result));
+                        setUserData(userResponse.data.result);
+                    }
+
+                    window.location.href = "/";
+                }
+            } catch (error) {
+                router.push("/error");
+                console.error(error); // 에러 로깅
             }
-        } catch (error) {
-            router.push("/error");
-            console.error(error); // 에러 로깅
-        }
       };
 
       fetchData();
