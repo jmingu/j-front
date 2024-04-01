@@ -5,7 +5,8 @@ import axios from 'axios';
 import {USE_FRONT_URL} from '../../../constants';
 import {USE_BACK_URL} from '../../../constants';
 import {useRouter} from 'next/navigation';
-import { log } from 'console';
+import Image from 'next/image';
+import Naver from '../../../public/btnW_아이콘원형.png';
 
 interface UserProps {
     email: string,
@@ -101,8 +102,10 @@ const LoginPage = () => {
                 </div>
             </div>
             <div className='text-center'>
-                <div className='mt-5'>
-                <Link href={`https://nid.naver.com/oauth2.0/authorize?client_id=wuAWZWv8noa7LcgEUPRd&response_type=code&redirect_uri=${redirectUri}`} legacyBehavior>네이버 로그인</Link>
+                <div className='mt-5 flex justify-center'>
+                <Link href={`https://nid.naver.com/oauth2.0/authorize?client_id=wuAWZWv8noa7LcgEUPRd&response_type=code&redirect_uri=${redirectUri}`} legacyBehavior>
+                    <Image src={Naver} alt='네이버 로그인' className='max-w-[40px] cursor-pointer'/>
+                </Link>
                 </div>    
             </div>
             

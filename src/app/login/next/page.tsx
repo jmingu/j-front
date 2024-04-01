@@ -12,11 +12,13 @@ const NextPage = (request:any) => {
 
     const router = useRouter();
     const [userData, setUserData] = useState(null);
+    const [code, setCode] = useState<String | null>(request.searchParams.code);
+    const [state, setState] = useState<String | null>(request.searchParams.state);
 
     useEffect(() => {
         const fetchData = async () => {
-            const searchCode = request.searchParams.code;
-            const searchState = request.searchParams.state;
+            const searchCode = code;
+            const searchState = state;
 
             try {
                 const response = await axios.get(`${USE_BACK_URL}/user/api/oauth/login/naver?code=${searchCode}&state=${searchState}`, {

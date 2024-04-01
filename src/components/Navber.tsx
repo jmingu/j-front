@@ -6,8 +6,6 @@ import { CiMenuBurger } from "react-icons/ci";
 import Image from 'next/image';
 import Logo from '../../public/project-j.png';
 
-
-
 const Navber = () => {
     const [menu, setMenu] = useState(false);
 
@@ -29,7 +27,7 @@ const Navber = () => {
                     <div className='flex items-center text-2xl h-14'>
                         <Link href="/">
                             <div className='flex justify-center sm:justify-start'>
-                                <Image src={Logo} alt='로고이미지' className='max-w-[50%]'/>
+                                <Image src={Logo} alt='로고이미지' className='max-w-[150px] sm:max-w-[180px]'/>
                             </div>
                         </Link>
                     </div>

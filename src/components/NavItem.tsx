@@ -55,6 +55,12 @@ const NavItem = ({mobile, setMenu} : {mobile?: boolean, setMenu?:any }) => {
                         <li>
                             <button onClick={()=>{ setMenu(false); router.push('/notice');  }}>공지사항</button>
                         </li>
+                        {
+                            (sessionStorage.getItem('k') === null || sessionStorage.getItem('k') === undefined) ? null :
+                            <li>
+                                <button onClick={()=>{ setMenu(false); router.push('/info');  }}>내정보</button>
+                            </li> 
+                        }
                     </ul>
                 </div>
             </>
@@ -72,7 +78,13 @@ const NavItem = ({mobile, setMenu} : {mobile?: boolean, setMenu?:any }) => {
                         <li>
                             <Link href="/notice">공지사항</Link> 
                         </li>
-                        <li className='ml-10'>
+                        {
+                            (sessionStorage.getItem('k') === null || sessionStorage.getItem('k') === undefined) ? null :
+                            <li>
+                                <Link href="/info">내정보</Link> 
+                            </li> 
+                        }
+                        <li className='ml-7 text-sm'>
                             {
                                 userData !== null ? 
                                     <>

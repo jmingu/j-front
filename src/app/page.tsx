@@ -37,6 +37,11 @@ export default function Home() {
 
     // 닉네임 등록
     const handleNick = () => {
+      if(inputNickname === null || inputNickname === undefined){
+        alert("닉네임을 입력해 주세요.");
+        return false;
+      } 
+      
       if(window.confirm("등록하시겠습니까?")) {
         axios.post(USE_BACK_URL+'/user/api/user/nickname',{
           nickname : inputNickname
