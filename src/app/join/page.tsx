@@ -19,6 +19,10 @@ const JoinPage = () => {
 
     // 중복확인
     const handleIdCheck = () => {
+        if(loginId === null || loginId === undefined){
+            alert("아이디를 입력해 주세요.");
+            return false;
+        }
         
         axios.get(USE_BACK_URL+'/user/api/user/join/login-check?loginId='+ loginId,
         {
@@ -43,6 +47,30 @@ const JoinPage = () => {
 
     // 가입
     const handJoin = () =>{
+        if(loginId === null || loginId === undefined || loginId === ""){
+            alert("아이디를 입력해 주세요.");
+            return false;
+        }
+        if(userName === null || userName === undefined || userName === ""){
+            alert("이름을 입력해 주세요.");
+            return false;
+        }
+        if(gender === null || gender === undefined || gender === ""){
+            alert("성별을 선택해 주세요.");
+            return false;
+        }
+        if(email === null || email === undefined || email === ""){
+            alert("이메일을 입력해 주세요.");
+            return false;
+        }
+        if(password === null || password === undefined || password === ""){
+            alert("비밀번호를 입력해 주세요.");
+            return false;
+        }
+        if(passwordCheck === null || passwordCheck === undefined || passwordCheck === ""){
+            alert("비밀번호 확인을 입력해 주세요.");
+            return false;
+        }
 
         if(loginIdCheck === false){
             alert("아이디 중복검사를 해주세요.");

@@ -20,6 +20,8 @@ const LoginPage = () => {
 
     const redirectUri = USE_FRONT_URL +"/login/next&state=dkfiskadspd";
 
+    const [clientId, setClientId] = useState(process.env.NEXT_PUBLIC_CLIENT_ID);
+
     const [userData, setUserData] = useState<UserProps | null>(null);
     const [loginId, setLoginId] = useState<string | null>(null);
     const [password, setPassword] = useState<string | null>(null);
@@ -103,7 +105,7 @@ const LoginPage = () => {
             </div>
             <div className='text-center'>
                 <div className='mt-5 flex justify-center'>
-                <Link href={`https://nid.naver.com/oauth2.0/authorize?client_id=wuAWZWv8noa7LcgEUPRd&response_type=code&redirect_uri=${redirectUri}`} legacyBehavior>
+                <Link href={`https://nid.naver.com/oauth2.0/authorize?client_id=${clientId}&response_type=code&redirect_uri=${redirectUri}`} legacyBehavior>
                     <Image src={Naver} alt='네이버 로그인' className='max-w-[40px] cursor-pointer'/>
                 </Link>
                 </div>    

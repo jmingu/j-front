@@ -18,11 +18,12 @@ const NavItem = ({mobile, setMenu} : {mobile?: boolean, setMenu?:any }) => {
 
     const [userData, setUserData] = useState<UserProps | null>(null);
 
+    const [sessionToken, setSessionToken] = useState<string | null>(null);
 
     useEffect(() => {
         // 클라이언트 사이드에서만 sessionStorage에 접근 가능합니다.
         const data = sessionStorage.getItem('u');
-        
+        setSessionToken(sessionStorage.getItem('k'));
         if(data !== null){
             setUserData(JSON.parse(data));
         }
@@ -56,7 +57,7 @@ const NavItem = ({mobile, setMenu} : {mobile?: boolean, setMenu?:any }) => {
                             <button onClick={()=>{ setMenu(false); router.push('/notice');  }}>공지사항</button>
                         </li>
                         {
-                            (sessionStorage.getItem('k') === null || sessionStorage.getItem('k') === undefined) ? null :
+                            (sessionToken === null || sessionToken === undefined) ? null :
                             <li>
                                 <button onClick={()=>{ setMenu(false); router.push('/info');  }}>내정보</button>
                             </li> 
@@ -79,7 +80,7 @@ const NavItem = ({mobile, setMenu} : {mobile?: boolean, setMenu?:any }) => {
                             <Link href="/notice">공지사항</Link> 
                         </li>
                         {
-                            (sessionStorage.getItem('k') === null || sessionStorage.getItem('k') === undefined) ? null :
+                            (sessionToken === null || sessionToken === undefined) ? null :
                             <li>
                                 <Link href="/info">내정보</Link> 
                             </li> 

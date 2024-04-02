@@ -12,8 +12,8 @@ const notoSansKr = Noto_Sans_KR({
 
 
 export const metadata: Metadata = {
-  title: "project-j",
-  description: "project-j app",
+  title: "PROJECT-J",
+  description: "PROJECT-J APP",
 };
 
 export default function RootLayout({
