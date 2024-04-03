@@ -91,7 +91,7 @@ const BoardDetailPage = ({ params }: { params: { boardId: number } }) => {
     useEffect(() => {  
         axios.get(USE_BACK_URL+'/post/api/borads/' + params.boardId, {
             headers: {
-                'Authorization': 'Bearer '+ sessionStorage.getItem('k'),
+                'Authorization': 'Bearer '+ localStorage.getItem('a'),
                 'Content-Type': 'application/json'
             }
         })
@@ -114,7 +114,7 @@ const BoardDetailPage = ({ params }: { params: { boardId: number } }) => {
             }, 
             {
                 headers: {
-                    'Authorization': 'Bearer '+ sessionStorage.getItem('k'),
+                    'Authorization': 'Bearer '+ localStorage.getItem('a'),
                     'Content-Type': 'application/json'
                 }
             })
@@ -140,7 +140,7 @@ const BoardDetailPage = ({ params }: { params: { boardId: number } }) => {
         setComments([])
         axios.get(USE_BACK_URL+'/post/api/borads/' + params.boardId + "/comments?page=" + currentPage + '&size=' + itemPageSize, {
             headers: {
-                'Authorization': 'Bearer '+ sessionStorage.getItem('k'),
+                'Authorization': 'Bearer '+ localStorage.getItem('a'),
                 'Content-Type': 'application/json'
             }
         })
@@ -163,7 +163,7 @@ const BoardDetailPage = ({ params }: { params: { boardId: number } }) => {
         
         axios.post(USE_BACK_URL+'/post/api/borads/'+ post?.boardId +'/' + value,{}, {
             headers: {
-                'Authorization': 'Bearer '+ sessionStorage.getItem('k'),
+                'Authorization': 'Bearer '+ localStorage.getItem('a'),
                 'Content-Type': 'application/json'
             }
         })
@@ -185,7 +185,7 @@ const BoardDetailPage = ({ params }: { params: { boardId: number } }) => {
             axios.delete(USE_BACK_URL+'/post/api/borads/'+ params.boardId,
             {
                 headers: {
-                    'Authorization': 'Bearer '+ sessionStorage.getItem('k'),
+                    'Authorization': 'Bearer '+ localStorage.getItem('a'),
                     'Content-Type': 'application/json'
                 }
             })

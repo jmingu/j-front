@@ -14,7 +14,7 @@ const InfoPage = () => {
     const [inputNickname, setInputNickname] = useState<string | null>(null);
 
     useEffect(() => {
-        if(sessionStorage.getItem('k') === null || sessionStorage.getItem('k') === undefined){
+        if(localStorage.getItem('a') === null || localStorage.getItem('a') === undefined){
             alert("로그인이 필요합니다.");
             router.push("/error");
         }
@@ -23,7 +23,7 @@ const InfoPage = () => {
     useEffect(() => {
         axios.get(`${USE_BACK_URL}/user/api/user/token`, {
             headers: {
-                'Authorization': 'Bearer ' + sessionStorage.getItem('k'),
+                'Authorization': 'Bearer ' + localStorage.getItem('a'),
                 'Content-Type': 'application/json'
             }
         })
@@ -55,7 +55,7 @@ const InfoPage = () => {
           }, 
           {
             headers: {
-                'Authorization': 'Bearer '+ sessionStorage.getItem('k'),
+                'Authorization': 'Bearer '+ localStorage.getItem('a'),
                 'Content-Type': 'application/json'
             }
           })

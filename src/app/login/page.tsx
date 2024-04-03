@@ -46,12 +46,12 @@ const LoginPage = () => {
             },
             {
                 headers: {
-                    'Authorization': 'Bearer '+ sessionStorage.getItem('k'),
+                    'Authorization': 'Bearer '+ localStorage.getItem('a'),
                     'Content-Type': 'application/json'
                 }
             });
             if (response.status === 200) {
-                sessionStorage.setItem('k', response.data.result.accessToken);
+                localStorage.setItem('a', response.data.result.accessToken);
                 localStorage.setItem('p', response.data.result.refreshToken);
                 
                 const tokenData = response.data.result.accessToken;

@@ -23,7 +23,7 @@ export default function Home() {
     useEffect(() => {
       // 클라이언트 사이드에서만 sessionStorage에 접근 가능합니다.
       const userData = sessionStorage.getItem('u');
-      const kData = sessionStorage.getItem('k');
+      const kData = localStorage.getItem('a');
       
       if(kData !== null){
           setkData(kData);
@@ -48,7 +48,7 @@ export default function Home() {
         }, 
         {
           headers: {
-              'Authorization': 'Bearer '+ sessionStorage.getItem('k'),
+              'Authorization': 'Bearer '+ localStorage.getItem('a'),
               'Content-Type': 'application/json'
           }
         })

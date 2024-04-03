@@ -4,6 +4,7 @@ import Link from 'next/link';
 import axios from 'axios';
 import {USE_BACK_URL} from '../../../constants'
 import {useRouter} from 'next/navigation';
+import {GetRequestErrorPageRouter} from '../common/commonAxios';
 
 interface BoardItem {
     boardId: number;
@@ -21,8 +22,11 @@ interface UserProps {
     userName: string
 }
 
+
 const BoardPage = () => {
+    
     const router = useRouter();
+    
     
     const [boardList, setBoardList] = useState<BoardItem[]>([]); // boardList 상태 선언
     const [totalPages, setTotalPages] = useState(0); // 전체 페이지 개수
@@ -36,8 +40,9 @@ const BoardPage = () => {
     const [sessionUser, setSessionUser] = useState<UserProps | null>(null);
 
     useEffect(() => {
-        
-        setSessionToken(sessionStorage.getItem('k'));
+
+        setSessionToken(localStorage.getItem('a'));
+
         const userData:any = sessionStorage.getItem('u');
         setSessionUser(JSON.parse(userData));
     },[]);
@@ -78,6 +83,9 @@ const BoardPage = () => {
     const [startPage, endPage] = calculatePageRange();
 
     useEffect(() => {
+
+        // const result = GetRequestErrorPageRouter('/post/api/borads?page=' + currentPage + '&size=' + itemsPerPage);
+        // console.log(result)
 
         axios.get(USE_BACK_URL+'/post/api/borads?page=' + currentPage + '&size=' + itemsPerPage, {
             headers: {

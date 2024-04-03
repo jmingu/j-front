@@ -29,8 +29,8 @@ const NextPage = (request:any) => {
                 });
 
                 if (response.status === 200) {
-                    sessionStorage.setItem('k', response.data.result.accessToken);
-                    localStorage.setItem('p', response.data.result.refreshToken);
+                    localStorage.setItem('a', response.data.result.accessToken);
+                    localStorage.setItem('b', response.data.result.refreshToken);
                     
                     const tokenData = response.data.result.accessToken;
 

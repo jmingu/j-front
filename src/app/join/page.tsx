@@ -27,7 +27,7 @@ const JoinPage = () => {
         axios.get(USE_BACK_URL+'/user/api/user/join/login-check?loginId='+ loginId,
         {
           headers: {
-              'Authorization': 'Bearer '+ sessionStorage.getItem('k'),
+              'Authorization': 'Bearer '+ localStorage.getItem('a'),
               'Content-Type': 'application/json'
           }
         })
@@ -94,7 +94,7 @@ const JoinPage = () => {
         },
         {
           headers: {
-              'Authorization': 'Bearer '+ sessionStorage.getItem('k'),
+              'Authorization': 'Bearer '+ localStorage.getItem('a'),
               'Content-Type': 'application/json'
           }
         })
