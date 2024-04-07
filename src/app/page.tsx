@@ -74,7 +74,7 @@ export default function Home() {
         <p>안녕하세요. 방문해 주셔서 감사합니다.</p>
         <div className='h-32 border-[2px] border-gray-200 max-w-80 m-auto mt-16 items-center flex justify-center'>
           {
-            kData === null ? 
+            kData === null || kData === undefined ? 
               <div>
                 <div className='mb-5'>로그인을 하면 더 많은 기능을 <br/>이용 할 수 있습니다.</div>
                 <Link href={"/login"}>
@@ -82,7 +82,7 @@ export default function Home() {
                 </Link> 
               </div>
             :
-              uData === null ? 
+              uData === null || uData === undefined ? 
                 <Link href={"/"}>로그인 하러가기</Link>  
               :
                 (uData.nickname !== null && uData.nickname !== undefined) ? 

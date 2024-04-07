@@ -46,7 +46,7 @@ const LoginPage = () => {
             },
             {
                 headers: {
-                    'Authorization': 'Bearer '+ localStorage.getItem('a'),
+                    'Authorization': 'Bearer '+ null,
                     'Content-Type': 'application/json'
                 }
             });
