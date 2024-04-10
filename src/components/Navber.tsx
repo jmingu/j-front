@@ -8,12 +8,11 @@ import Logo from '../../public/project-j.png';
 
 const Navber = () => {
     const [menu, setMenu] = useState(false);
-
+    console.log("333")
 
     const handleMenu = () => {
         setMenu(!menu);
     }
-
 
     return (
         <nav className='w-full bg-white'>
