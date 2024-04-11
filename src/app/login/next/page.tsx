@@ -29,7 +29,7 @@ const NextPage = (request:any) => {
                 });
 
                 if (response.status === 200) {
-                    localStorage.setItem('a', response.data.result.accessToken);
+                    sessionStorage.setItem('a', response.data.result.accessToken);
                     localStorage.setItem('b', response.data.result.refreshToken);
                     
                     const tokenData = response.data.result.accessToken;

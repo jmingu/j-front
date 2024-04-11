@@ -41,7 +41,7 @@ const BoardPage = () => {
 
     useEffect(() => {
 
-        setSessionToken(localStorage.getItem('a'));
+        setSessionToken(sessionStorage.getItem('a'));
 
         const userData:any = sessionStorage.getItem('u');
         setSessionUser(JSON.parse(userData));
