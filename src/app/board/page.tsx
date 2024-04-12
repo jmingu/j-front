@@ -83,6 +83,7 @@ const BoardPage = () => {
     const [startPage, endPage] = calculatePageRange();
 
     useEffect(() => {
+        
         customAxios.get('/post/api/borads?page=' + currentPage + '&size=' + itemsPerPage)
         .then( response => {
             if(response.status === 200){
@@ -92,7 +93,7 @@ const BoardPage = () => {
             
         })
         .catch(error => {
-            // refreshToken(error)
+            refreshToken(error)
             router.push("/error");
         });
 
