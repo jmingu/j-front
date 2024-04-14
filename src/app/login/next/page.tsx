@@ -29,7 +29,7 @@ const NextPage = (request:any) => {
                 });
 
                 if (response.status === 200) {
-                    sessionStorage.setItem('a', response.data.result.accessToken);
+                    localStorage.setItem('a', response.data.result.accessToken);
                     localStorage.setItem('b', response.data.result.refreshToken);
                     
                     const tokenData = response.data.result.accessToken;
@@ -42,7 +42,7 @@ const NextPage = (request:any) => {
                     });
 
                     if (userResponse.status === 200) {
-                        sessionStorage.setItem('u', JSON.stringify(userResponse.data.result));
+                        localStorage.setItem('u', JSON.stringify(userResponse.data.result));
                         setUserData(userResponse.data.result);
                     }
 

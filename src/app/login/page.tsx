@@ -51,7 +51,7 @@ const LoginPage = () => {
                 }
             });
             if (response.status === 200) {
-                sessionStorage.setItem('a', response.data.result.accessToken);
+                localStorage.setItem('a', response.data.result.accessToken);
                 localStorage.setItem('p', response.data.result.refreshToken);
                 
                 const tokenData = response.data.result.accessToken;
@@ -64,7 +64,7 @@ const LoginPage = () => {
                 });
 
                 if (userResponse.status === 200) {
-                    sessionStorage.setItem('u', JSON.stringify(userResponse.data.result));
+                    localStorage.setItem('u', JSON.stringify(userResponse.data.result));
                     setUserData(userResponse.data.result);
                 }
                 window.location.href = "/";

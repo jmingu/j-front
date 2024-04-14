@@ -51,7 +51,7 @@ const Comment = ({ comment, boardId, commentList}: { comment: CommentProps, boar
         }, 
         {
           headers: {
-              'Authorization': 'Bearer '+ sessionStorage.getItem('a'),
+              'Authorization': 'Bearer '+ localStorage.getItem('a'),
               'Content-Type': 'application/json'
           }
         })
@@ -85,7 +85,7 @@ const Comment = ({ comment, boardId, commentList}: { comment: CommentProps, boar
       axios.delete(USE_BACK_URL+'/post/api/comments/'+ comments?.commentId,
       {
         headers: {
-            'Authorization': 'Bearer '+ sessionStorage.getItem('a'),
+            'Authorization': 'Bearer '+ localStorage.getItem('a'),
             'Content-Type': 'application/json'
         }
       })
@@ -115,7 +115,7 @@ const Comment = ({ comment, boardId, commentList}: { comment: CommentProps, boar
 
     axios.get(USE_BACK_URL+'/post/api/borads/' + boardId + "/comments?commentId=" + comments?.commentId + "&page=" + subCurrentPage + '&size=' + subPageSize, {
       headers: {
-        'Authorization': 'Bearer '+ sessionStorage.getItem('a'),
+        'Authorization': 'Bearer '+ localStorage.getItem('a'),
         'Content-Type': 'application/json'
       }
     })
@@ -145,7 +145,7 @@ const Comment = ({ comment, boardId, commentList}: { comment: CommentProps, boar
       }, 
       {
           headers: {
-              'Authorization': 'Bearer '+ sessionStorage.getItem('a'),
+              'Authorization': 'Bearer '+ localStorage.getItem('a'),
               'Content-Type': 'application/json'
           }
       })
@@ -192,7 +192,7 @@ const Comment = ({ comment, boardId, commentList}: { comment: CommentProps, boar
         
     axios.post(USE_BACK_URL+'/post/api/comments/'+ comments?.commentId +'/' + value,{}, {
       headers: {
-          'Authorization': 'Bearer '+ sessionStorage.getItem('a'),
+          'Authorization': 'Bearer '+ localStorage.getItem('a'),
           'Content-Type': 'application/json'
       }
     })

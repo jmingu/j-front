@@ -23,7 +23,7 @@ export default function Home() {
     useEffect(() => {
       // 클라이언트 사이드에서만 sessionStorage에 접근 가능합니다.
       const userData = sessionStorage.getItem('u');
-      const kData = sessionStorage.getItem('a');
+      const kData = localStorage.getItem('a');
       
       if(kData !== null){
           setkData(kData);
@@ -48,14 +48,14 @@ export default function Home() {
         }, 
         {
           headers: {
-              'Authorization': 'Bearer '+ sessionStorage.getItem('a'),
+              'Authorization': 'Bearer '+ localStorage.getItem('a'),
               'Content-Type': 'application/json'
           }
         })
         .then( response => {
           console.log(response.data.result)
           if(response.status === 200){
-            sessionStorage.setItem('u', JSON.stringify(response.data.result));
+            localStorage.setItem('u', JSON.stringify(response.data.result));
             setUData(response.data.result);
           }else{
             alert("다시 시도해 주세요.");

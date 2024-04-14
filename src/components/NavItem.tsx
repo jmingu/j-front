@@ -23,7 +23,7 @@ const NavItem = ({mobile, setMenu} : {mobile?: boolean, setMenu?:any }) => {
     useEffect(() => {
         // 클라이언트 사이드에서만 sessionStorage에 접근 가능합니다.
         const data = sessionStorage.getItem('u');
-        setSessionToken(sessionStorage.getItem('a'));
+        setSessionToken(localStorage.getItem('a'));
         if(data !== null){
             setUserData(JSON.parse(data));
         }

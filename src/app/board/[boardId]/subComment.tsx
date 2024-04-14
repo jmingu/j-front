@@ -39,7 +39,7 @@ const SubComment = ({comment, subCommentDelete}: {comment: CommentProps, subComm
         }, 
         {
           headers: {
-              'Authorization': 'Bearer '+ sessionStorage.getItem('a'),
+              'Authorization': 'Bearer '+ localStorage.getItem('a'),
               'Content-Type': 'application/json'
           }
         })
@@ -75,7 +75,7 @@ const SubComment = ({comment, subCommentDelete}: {comment: CommentProps, subComm
       axios.delete(USE_BACK_URL+'/post/api/comments/'+ subComments?.commentId,
       {
         headers: {
-            'Authorization': 'Bearer '+ sessionStorage.getItem('a'),
+            'Authorization': 'Bearer '+ localStorage.getItem('a'),
             'Content-Type': 'application/json'
         }
       })
@@ -97,7 +97,7 @@ const SubComment = ({comment, subCommentDelete}: {comment: CommentProps, subComm
         
     axios.post(USE_BACK_URL+'/post/api/comments/'+ subComments.commentId +'/' + value,{}, {
         headers: {
-            'Authorization': 'Bearer '+ sessionStorage.getItem('a'),
+            'Authorization': 'Bearer '+ localStorage.getItem('a'),
             'Content-Type': 'application/json'
         }
     })

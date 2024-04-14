@@ -52,7 +52,7 @@ const Write = (request:any) => {
             }, 
             {
                 headers: {
-                    'Authorization': 'Bearer '+ sessionStorage.getItem('a'),
+                    'Authorization': 'Bearer '+ localStorage.getItem('a'),
                     'Content-Type': 'application/json'
                 }
             })
@@ -87,7 +87,7 @@ const Write = (request:any) => {
             }, 
             {
                 headers: {
-                    'Authorization': 'Bearer '+ sessionStorage.getItem('a'),
+                    'Authorization': 'Bearer '+ localStorage.getItem('a'),
                     'Content-Type': 'application/json'
                 }
             })
@@ -111,7 +111,7 @@ const Write = (request:any) => {
         if(param !== null && param !== undefined){
             axios.get(USE_BACK_URL+'/post/api/borads/' + param, {
                 headers: {
-                    'Authorization': 'Bearer '+ sessionStorage.getItem('a'),
+                    'Authorization': 'Bearer '+ localStorage.getItem('a'),
                     'Content-Type': 'application/json'
                 }
             })
