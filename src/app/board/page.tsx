@@ -4,7 +4,7 @@ import Link from 'next/link';
 import axios from 'axios';
 import {USE_BACK_URL} from '../../../constants'
 import {useRouter} from 'next/navigation';
-import {customAxios, refreshToken} from '../common/commonAxios';
+import {customAxios, refreshToken,commonAxios} from '../common/commonAxios';
 
 interface BoardItem {
     boardId: number;
@@ -83,18 +83,15 @@ const BoardPage = () => {
     const [startPage, endPage] = calculatePageRange();
 
     useEffect(() => {
-        
-        customAxios.get('/post/api/borads?page=' + currentPage + '&size=' + itemsPerPage)
-        .then( response => {
-            if(response.status === 200){
-                setTotalPages(Math.ceil((response.data.result.totalBoard)/itemsPerPage));
-                setBoardList(response.data.result.boardList);
-            }
-            
-        })
-        .catch(error => {
-            refreshToken(error)
-            router.push("/error");
+
+        const fetchData = async () => {
+            const result:any = await commonAxios("get", '/post/api/borads?page=' + currentPage + '&size=' + itemsPerPage, "alert");
+            return result; // 결과를 반환
+        };
+
+        fetchData().then(response => {
+            setTotalPages(Math.ceil((response.data.result.totalBoard)/itemsPerPage));
+            setBoardList(response.data.result.boardList);
         });
 
     }, [currentPage]); // currentPage를 의존성 배열에 추가

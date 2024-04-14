@@ -11,6 +11,29 @@ export const customAxios: AxiosInstance = axios.create({
   
 });
 
+export const commonAxios = async (method: "get" | "post" | "put" | "patch" | "delete", url:string, errorType: "page" | "alert") => {
+
+  let response:any;
+
+  await customAxios[method](url, url)
+  .then(result => {
+    // 성공 시의 처리
+    response = result;
+  })
+  .catch(error => {
+    if(errorType === "page"){
+      window.location.href = "/error";
+    }
+    else {
+      alert("다시시도해 주세요.")
+    }
+  });
+  console.log("response")
+  return response;
+};
+
+
+
 export const refreshToken = (error:any):any => {
 
   const accessToken:any = localStorage.getItem('a');
@@ -18,7 +41,6 @@ export const refreshToken = (error:any):any => {
   if(error?.response.status === 401){
     // console.log(accessToken)
     localStorage.setItem('a', accessToken);
-    console.log(sessionStorage.getItem("a"))
     axios.get(USE_BACK_URL + '/post/api/borads?page=1&size=10',{
       headers: {
         'Authorization': 'Bearer ' + accessToken,
