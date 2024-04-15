@@ -85,7 +85,7 @@ const BoardPage = () => {
     useEffect(() => {
 
         const fetchData = async () => {
-            const result:any = await commonAxios("get", '/post/api/borads?page=' + currentPage + '&size=' + itemsPerPage, "alert");
+            const result:any = await commonAxios("get", '/post/api/borads?page=' + currentPage + '&size=' + itemsPerPage, "page");
             return result; // 결과를 반환
         };
 
