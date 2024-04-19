@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react'
 import {USE_BACK_URL} from '../../../../constants'
 import axios from 'axios';
 import {useRouter} from 'next/navigation'
-import { request } from 'http';
+import {commonAxios} from '../../common/commonAxios';
 
 interface UserProps {
     email: string,
@@ -26,7 +26,7 @@ const Write = (request:any) => {
 
     useEffect(() => {
 
-        const userData:any = sessionStorage.getItem('u');
+        const userData:any = localStorage.getItem('u');
         setSessionUser(JSON.parse(userData));
     },[]);
 
@@ -46,26 +46,21 @@ const Write = (request:any) => {
             return false;
         }
         if(window.confirm("등록하시겠습니까?")) {
-            axios.post(USE_BACK_URL+'/post/api/borads',{
-                title : title,
-                content : content
-            }, 
-            {
-                headers: {
-                    'Authorization': 'Bearer '+ localStorage.getItem('a'),
-                    'Content-Type': 'application/json'
-                }
-            })
-            .then( response => {
-                if(response.status === 200){
-                    alert("등록되었습니다.");
-                    router.push("/board");
-                    
-                }
-            })
-            .catch(error => {
-                alert(error.response.data.resultMessage);
+
+            const fetchData = async () => {
+                const result:any = await commonAxios("post", localStorage.getItem("a"), "/post/api/borads", {
+                    title : title,
+                    content : content
+                }, "alert");
+                return result; // 결과를 반환
+            };
+    
+            fetchData().then(response => {
+                alert("등록되었습니다.");
+                
+                router.push("/board");
             });
+
         }      
     }
 

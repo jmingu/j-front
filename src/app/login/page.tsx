@@ -28,7 +28,7 @@ const LoginPage = () => {
 
     useEffect(() => {
         // 클라이언트 사이드에서만 sessionStorage에 접근 가능합니다.
-        const data = sessionStorage.getItem('u');
+        const data = localStorage.getItem('u');
         
         if(data !== null){
             setUserData(JSON.parse(data));

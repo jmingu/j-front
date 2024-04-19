@@ -243,7 +243,7 @@ const BoardDetailPage = ({ params }: { params: { boardId: number } }) => {
             <div className='flex justify-between'>
                 <h2 className="mb-2">댓글</h2>
                 {
-                    sessionStorage.getItem('u') !== null ?
+                    localStorage.getItem('u') !== null ?
                     <div className='cursor-pointer font-bold' onClick={handleCreate}>완료</div> :
                     null
                 }
@@ -251,7 +251,7 @@ const BoardDetailPage = ({ params }: { params: { boardId: number } }) => {
             </div>
             <textarea 
                 className="top-0 border-2 border-gray-200 resize-none focus:outline-none w-full h-full p-3" 
-                placeholder={sessionStorage.getItem('u') !== null ? '댓글을 작성해 주세요.' : '로그인 후 작성이 가능합니다.'}
+                placeholder={localStorage.getItem('u') !== null ? '댓글을 작성해 주세요.' : '로그인 후 작성이 가능합니다.'}
                 value={inputValue||""}
                 onChange={(e) => setInputValue(e.target.value)}
             />

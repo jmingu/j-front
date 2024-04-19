@@ -273,12 +273,12 @@ const Comment = ({ comment, boardId, commentList}: { comment: CommentProps, boar
         <div>└</div>
         <input 
             className="border rounded focus:outline-none py-1 px-2 w-full ml-2"
-            placeholder={sessionStorage.getItem('u') !== null ? '대댓글을 작성해 주세요.' : '로그인 후 작성이 가능합니다.'}
+            placeholder={localStorage.getItem('u') !== null ? '대댓글을 작성해 주세요.' : '로그인 후 작성이 가능합니다.'}
             value={subCommentInput||""}
             onChange={(e) => setSubCommentInput(e.target.value)}
         />
         {
-            sessionStorage.getItem('u') !== null ?
+            localStorage.getItem('u') !== null ?
             <div className='ml-4 whitespace-nowrap w-[30px] cursor-pointer font-bold' onClick={handleCreate}>완료</div> :
             <div className='ml-4 whitespace-nowrap w-[30px] cursor-pointer'></div>
         }

@@ -4,7 +4,7 @@ import Link from 'next/link';
 import axios from 'axios';
 import {USE_BACK_URL} from '../../../constants'
 import {useRouter} from 'next/navigation';
-import {customAxios, refreshToken,commonAxios} from '../common/commonAxios';
+import {commonAxios} from '../common/commonAxios';
 
 interface BoardItem {
     boardId: number;
@@ -43,7 +43,7 @@ const BoardPage = () => {
 
         setSessionToken(localStorage.getItem('a'));
 
-        const userData:any = sessionStorage.getItem('u');
+        const userData:any = localStorage.getItem('u');
         setSessionUser(JSON.parse(userData));
     },[]);
     
@@ -85,7 +85,8 @@ const BoardPage = () => {
     useEffect(() => {
 
         const fetchData = async () => {
-            const result:any = await commonAxios("get", '/post/api/borads?page=' + currentPage + '&size=' + itemsPerPage, "page");
+            console.log(localStorage.getItem("a"));
+            const result:any = await commonAxios("get",localStorage.getItem("a"), '/post/api/borads?page=' + currentPage + '&size=' + itemsPerPage, null, "page");
             return result; // 결과를 반환
         };
 

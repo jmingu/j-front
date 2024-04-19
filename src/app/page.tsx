@@ -22,7 +22,7 @@ export default function Home() {
 
     useEffect(() => {
       // 클라이언트 사이드에서만 sessionStorage에 접근 가능합니다.
-      const userData = sessionStorage.getItem('u');
+      const userData = localStorage.getItem('u');
       const kData = localStorage.getItem('a');
       
       if(kData !== null){
