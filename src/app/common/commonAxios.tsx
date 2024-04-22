@@ -11,11 +11,25 @@ const token = () => {
 export const customAxios: AxiosInstance = axios.create({
   baseURL: `${USE_BACK_URL}`, // 기본 서버 주소 입력
   headers: {
-    'Authorization': 'Bearer ' + token(),
     'Content-Type': 'application/json'
   }
-  
 });
+
+// 새로운 토큰으로 Authorization 헤더를 동적으로 설정합니다.
+customAxios.interceptors.request.use(
+  (config) => {
+    // 현재 토큰 값을 localStorage에서 가져옵니다.
+    const currentToken = token();
+    if (currentToken) {
+      // Authorization 헤더에 현재 토큰 값을 설정합니다.
+      config.headers['Authorization'] = `Bearer ${currentToken}`;
+    }
+    return config;
+  },
+  (error) => {
+    return Promise.reject(error);
+  }
+);
 
 export const commonAxios = async (method: "get" | "post" | "put" | "patch" | "delete", url:string, body:any, errorType: "page" | "alert") => {
 
