@@ -2,29 +2,29 @@
 import axios, { AxiosInstance, AxiosRequestConfig  } from 'axios';
 import {USE_BACK_URL} from '../../../constants';
 
+const token = () => {
+  const localStorageToken = localStorage.getItem('a');
+  console.log(localStorageToken);
+  return localStorageToken;
+}
+
 export const customAxios: AxiosInstance = axios.create({
   baseURL: `${USE_BACK_URL}`, // 기본 서버 주소 입력
   headers: {
-    'Authorization': 'Bearer ' + localStorage.getItem('a'),
+    'Authorization': 'Bearer ' + token(),
     'Content-Type': 'application/json'
   }
   
 });
 
-export const commonAxios = async (method: "get" | "post" | "put" | "patch" | "delete", token:any, url:string, body:any, errorType: "page" | "alert") => {
-  console.log(token)
+export const commonAxios = async (method: "get" | "post" | "put" | "patch" | "delete", url:string, body:any, errorType: "page" | "alert") => {
+
   try {
     // customAxios의 비동기 요청을 기다린 후 결과를 반환합니다.
-    const response = await axios[method](USE_BACK_URL + url, body,
-      {
-        headers: {
-          'Authorization': 'Bearer '+ token,
-          'Content-Type': 'application/json'
-        }
-      })
+    const response = await customAxios[method](url, body);
+
     return response; // 성공적인 응답을 반환합니다.
   } catch (error:any) {
-    
     
     if(error.response.status === 401){
       try {
@@ -40,17 +40,10 @@ export const commonAxios = async (method: "get" | "post" | "put" | "patch" | "de
         console.log(result.data.result.accessToken);
 
         localStorage.setItem("a", result.data.result.accessToken);
-        const newToken = localStorage.getItem("a");
-        console.log(newToken);
+        console.log(localStorage.getItem('a'));
         
+        const reResponse = await customAxios[method](url, body);
 
-        const reResponse = await axios[method](USE_BACK_URL + url, body,
-        {
-          headers: {
-            'Authorization': 'Bearer '+ newToken,
-            'Content-Type': 'application/json'
-          }
-        })
         console.log(reResponse);
         return reResponse; // 성공적인 응답을 반환합니다.
       } catch (error:any) {

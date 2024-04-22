@@ -48,7 +48,7 @@ const Write = (request:any) => {
         if(window.confirm("등록하시겠습니까?")) {
 
             const fetchData = async () => {
-                const result:any = await commonAxios("post", localStorage.getItem("a"), "/post/api/borads", {
+                const result:any = await commonAxios("post", "/post/api/borads", {
                     title : title,
                     content : content
                 }, "alert");

@@ -86,7 +86,7 @@ const BoardPage = () => {
 
         const fetchData = async () => {
             console.log(localStorage.getItem("a"));
-            const result:any = await commonAxios("get",localStorage.getItem("a"), '/post/api/borads?page=' + currentPage + '&size=' + itemsPerPage, null, "page");
+            const result:any = await commonAxios("get",'/post/api/borads?page=' + currentPage + '&size=' + itemsPerPage, null, "page");
             return result; // 결과를 반환
         };
 
