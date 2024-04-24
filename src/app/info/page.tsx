@@ -1,7 +1,6 @@
 "use client"
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
-import {USE_BACK_URL} from '../../../constants';
+import {commonAxios} from '../common/commonAxios';
 import {useRouter} from 'next/navigation';
 
 const InfoPage = () => {
@@ -21,23 +20,17 @@ const InfoPage = () => {
     },[]);
 
     useEffect(() => {
-        axios.get(`${USE_BACK_URL}/user/api/user/token`, {
-            headers: {
-                'Authorization': 'Bearer ' + localStorage.getItem('a'),
-                'Content-Type': 'application/json'
-            }
-        })
-        .then( response => {
-            if(response.status === 200){      
-                setUserName(response.data.result.userName);
-                setGender(response.data.result.gender);
-                setNickname(response.data.result.nickname);
-                setEmail(response.data.result.email);
-            }
-        })
-        .catch(error => {
-            router.push("/error");
-            console.error(error); // 에러 로깅
+
+        const fetchData = async () => {
+            const result:any = await commonAxios("get","/user/api/user/token", null, "page");
+            return result; // 결과를 반환
+        };
+    
+        fetchData().then(response => {
+            setUserName(response.data.result.userName);
+            setGender(response.data.result.gender);
+            setNickname(response.data.result.nickname);
+            setEmail(response.data.result.email);
         });
     },[]);
 
@@ -50,26 +43,17 @@ const InfoPage = () => {
         }
 
         if(window.confirm("등록하시겠습니까?")) {
-          axios.post(USE_BACK_URL+'/user/api/user/nickname',{
-            nickname : inputNickname
-          }, 
-          {
-            headers: {
-                'Authorization': 'Bearer '+ localStorage.getItem('a'),
-                'Content-Type': 'application/json'
-            }
-          })
-          .then( response => {
-            console.log(response.data.result)
-            if(response.status === 200){
+
+            const fetchData = async () => {
+                const result:any = await commonAxios("post",'/user/api/user/nickname', {
+                    nickname : inputNickname
+                  }, "alert");
+                return result; // 결과를 반환
+            };
+        
+            fetchData().then(response => {
                 setNickname(response.data.result.nickname);
-            }else{
-              alert("다시 시도해 주세요.");
-            }
-          })
-          .catch(error => {
-            alert(error.response.data.resultMessage);
-          });
+            });
         }
       }
 

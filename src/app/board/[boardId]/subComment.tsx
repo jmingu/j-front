@@ -1,7 +1,6 @@
 "use client"
 import React, {useState } from 'react'
-import {USE_BACK_URL} from '../../../../constants'
-import axios from 'axios';
+import {commonAxios} from '../../common/commonAxios';
 import { BiLike  } from "react-icons/bi";
 import { BiDislike  } from "react-icons/bi";
 import { BiSolidDislike } from "react-icons/bi";
@@ -33,27 +32,19 @@ const SubComment = ({comment, subCommentDelete}: {comment: CommentProps, subComm
     // 완료일때
     if(isEdit){
       if(window.confirm("수정하시겠습니까?")) {
+
         setIsEdit(false); 
-        axios.patch(USE_BACK_URL+'/post/api/comments/'+ subComments.commentId,{
-          content: inputValue,
-        }, 
-        {
-          headers: {
-              'Authorization': 'Bearer '+ localStorage.getItem('a'),
-              'Content-Type': 'application/json'
-          }
-        })
-        .then( response => {
-          
-            if(response.status === 200){
-              console.log(response.data.result.comment);
-              alert("수정되었습니다.");
-              setSubComments(response.data.result.comment);
-              
-            }
-        })
-        .catch(error => {
-            alert(error.response.data.resultMessage);
+
+        const fetchData = async () => {
+          const result:any = await commonAxios("patch",'/post/api/comments/'+ subComments.commentId, {
+            content: inputValue
+          }, "alert");
+          return result; // 결과를 반환
+        };
+
+        fetchData().then(response => {
+          alert("수정되었습니다.");
+          setSubComments(response.data.result.comment);
         });
       }
     }
@@ -62,6 +53,7 @@ const SubComment = ({comment, subCommentDelete}: {comment: CommentProps, subComm
       setIsEdit(true);
     }
   }
+
   // 취소
   const handleCancle = () => {
     setIsEdit(false);
@@ -72,44 +64,30 @@ const SubComment = ({comment, subCommentDelete}: {comment: CommentProps, subComm
 
     if(window.confirm("삭제하시겠습니까?")) {
       setIsEdit(false); 
-      axios.delete(USE_BACK_URL+'/post/api/comments/'+ subComments?.commentId,
-      {
-        headers: {
-            'Authorization': 'Bearer '+ localStorage.getItem('a'),
-            'Content-Type': 'application/json'
-        }
-      })
-      .then( response => {
-        
-          if(response.status === 200){
-            alert("삭제되었습니다.");
-            subCommentDelete(); // 삭제감지
-            
-          }
-      })
-      .catch(error => {
-          alert(error.response.data.resultMessage);
+
+      const fetchData = async () => {
+        const result:any = await commonAxios("delete",'/post/api/comments/'+ subComments?.commentId, null, "alert");
+        return result; // 결과를 반환
+      };
+
+      fetchData().then(response => {
+        alert("삭제되었습니다.");
+        subCommentDelete(); // 삭제감지
       });
     }
   }
 
   const handleLikeBadClick = (value: string): void => {
-        
-    axios.post(USE_BACK_URL+'/post/api/comments/'+ subComments.commentId +'/' + value,{}, {
-        headers: {
-            'Authorization': 'Bearer '+ localStorage.getItem('a'),
-            'Content-Type': 'application/json'
-        }
-    })
-    .then( response => {
-      if(response.status === 200){
-        setSubComments(response.data.result.comment);
-      }
-    })
-    .catch(error => {
-       
-        alert(error.response.data.resultMessage);
+
+    const fetchData = async () => {
+      const result:any = await commonAxios("post",'/post/api/comments/'+ subComments.commentId +'/' + value, {}, "alert");
+      return result; // 결과를 반환
+    };
+
+    fetchData().then(response => {
+      setSubComments(response.data.result.comment);
     });
+    
   }
 
   return (

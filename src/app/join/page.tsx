@@ -1,6 +1,6 @@
 "use client"
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
+import {commonAxios} from '../common/commonAxios';
 import {USE_BACK_URL} from '../../../constants';
 import {useRouter} from 'next/navigation';
 
@@ -23,26 +23,17 @@ const JoinPage = () => {
             alert("아이디를 입력해 주세요.");
             return false;
         }
-        
-        axios.get(USE_BACK_URL+'/user/api/user/join/login-check?loginId='+ loginId,
-        {
-          headers: {
-              'Authorization': 'Bearer '+ localStorage.getItem('a'),
-              'Content-Type': 'application/json'
-          }
-        })
-        .then(response => {
-            if (response.status === 200) {
-                setLoginIdCheck(true);
-                alert("사용할 수 있는 아이디입니다.");
-            }else{
-                alert("다시 시도해 주세요.");
-            }
-          
-        })
-        .catch(error => {
-            alert(error.response.data.resultMessage);
+
+        const fetchData = async () => {
+            const result:any = await commonAxios("get",'/user/api/user/join/login-check?loginId='+ loginId, null, "alert");
+            return result; // 결과를 반환
+        };
+    
+        fetchData().then(response => {
+            setLoginIdCheck(true);
+            alert("사용할 수 있는 아이디입니다.");
         });
+
     }
 
     // 가입
@@ -85,33 +76,22 @@ const JoinPage = () => {
             return false;
         }
 
-        axios.post(USE_BACK_URL+'/user/api/user/join',{
-            loginId : loginId,
-            userName : userName,
-            gender : gender,
-            email : email,
-            password : passwordCheck
-        },
-        {
-          headers: {
-              'Authorization': 'Bearer '+ localStorage.getItem('a'),
-              'Content-Type': 'application/json'
-          }
-        })
-        .then(response => {
-            if (response.status === 200) {
-                
-                alert("가입성공");
-                router.push("/login");
-            }else{
-                alert("다시 시도해 주세요.");
-            }
-          
-        })
-        .catch(error => {
-            alert(error.response.data.resultMessage);
-        });
 
+        const fetchData = async () => {
+            const result:any = await commonAxios("post",'/user/api/user/join', {
+                loginId : loginId,
+                userName : userName,
+                gender : gender,
+                email : email,
+                password : passwordCheck
+            }, "alert");
+            return result; // 결과를 반환
+        };
+    
+        fetchData().then(response => {
+            alert("가입성공");
+            router.push("/login");
+        });
 
     }
     

@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react'
 import Link from 'next/link';
 import {USE_BACK_URL} from '../../constants'
 import axios from 'axios';
-import {USE_FRONT_URL} from '../../constants';
+import {commonAxios} from './common/commonAxios';
 
 interface UserProps {
   email: string,
@@ -43,27 +43,18 @@ export default function Home() {
       } 
       
       if(window.confirm("등록하시겠습니까?")) {
-        axios.post(USE_BACK_URL+'/user/api/user/nickname',{
-          nickname : inputNickname
-        }, 
-        {
-          headers: {
-              'Authorization': 'Bearer '+ localStorage.getItem('a'),
-              'Content-Type': 'application/json'
-          }
-        })
-        .then( response => {
-          console.log(response.data.result)
-          if(response.status === 200){
-            localStorage.setItem('u', JSON.stringify(response.data.result));
-            setUData(response.data.result);
-          }else{
-            alert("다시 시도해 주세요.");
-          }
-        })
-        .catch(error => {
-          alert(error.response.data.resultMessage);
-        });
+
+        const fetchData = async () => {
+          const result:any = await commonAxios("post","/user/api/user/nickname", {
+            nickname : inputNickname
+          }, "alert");
+          return result; // 결과를 반환
+      };
+
+      fetchData().then(response => {
+        localStorage.setItem('u', JSON.stringify(response.data.result));
+        setUData(response.data.result);
+      });
       }
     }
     

@@ -40,6 +40,7 @@ const LoginPage = () => {
     const handleLogin = async () => {
 
         try {
+            
             const response = await axios.post(USE_BACK_URL+'/user/api/user/login',{
                 loginId : loginId,
                 password : password

@@ -1,8 +1,7 @@
 "use client"
 import React, { useEffect, useState } from 'react'
 import {USE_BACK_URL} from '../../../../constants'
-import axios from 'axios';
-import {useRouter} from 'next/navigation'
+import {commonAxios} from '../../common/commonAxios';
 import SubComment from './subComment';
 import { BiLike  } from "react-icons/bi";
 import { BiDislike  } from "react-icons/bi";
@@ -46,25 +45,19 @@ const Comment = ({ comment, boardId, commentList}: { comment: CommentProps, boar
 
       if(window.confirm("수정하시겠습니까?")) {
         setIsEdit(false); 
-        axios.patch(USE_BACK_URL+'/post/api/comments/'+ comments?.commentId,{
-          content: inputValue,
-        }, 
-        {
-          headers: {
-              'Authorization': 'Bearer '+ localStorage.getItem('a'),
-              'Content-Type': 'application/json'
-          }
-        })
-        .then( response => {
-          
-            if(response.status === 200){
-              alert("수정되었습니다.");
-              setComments(response.data.result.comment);
-            }
-        })
-        .catch(error => {
-            alert(error.response.data.resultMessage);
+
+        const fetchData = async () => {
+          const result:any = await commonAxios("patch",'/post/api/comments/'+ comments?.commentId, {
+            content: inputValue,
+          }, "alert");
+          return result; // 결과를 반환
+        };
+
+        fetchData().then(response => {
+          alert("수정되었습니다.");
+          setComments(response.data.result.comment);
         });
+     
       }
     }
     // 수정일때
@@ -82,24 +75,20 @@ const Comment = ({ comment, boardId, commentList}: { comment: CommentProps, boar
   const handleDelete = () => {
     if(window.confirm("삭제하시겠습니까?")) {
       setIsEdit(false); 
-      axios.delete(USE_BACK_URL+'/post/api/comments/'+ comments?.commentId,
-      {
-        headers: {
-            'Authorization': 'Bearer '+ localStorage.getItem('a'),
-            'Content-Type': 'application/json'
-        }
-      })
-      .then( response => {
-        
-          if(response.status === 200){
-            alert("삭제되었습니다.");
-            commentList();
-            
-          }
-      })
-      .catch(error => {
-          alert(error.response.data.resultMessage);
+
+
+      const fetchData = async () => {
+        const result:any = await commonAxios("delete",'/post/api/comments/'+ comments?.commentId, {
+          content: inputValue,
+        }, "alert");
+        return result; // 결과를 반환
+      };
+
+      fetchData().then(response => {
+        alert("삭제되었습니다.");
+        commentList();
       });
+
     }
   }
 
@@ -112,25 +101,15 @@ const Comment = ({ comment, boardId, commentList}: { comment: CommentProps, boar
 
   const subCommentList = () => {
 
+    const fetchData = async () => {
+      const result:any = await commonAxios("get",'/post/api/borads/' + boardId + "/comments?commentId=" + comments?.commentId + "&page=" + subCurrentPage + '&size=' + subPageSize, null, "page");
+      return result; // 결과를 반환
+    };
 
-    axios.get(USE_BACK_URL+'/post/api/borads/' + boardId + "/comments?commentId=" + comments?.commentId + "&page=" + subCurrentPage + '&size=' + subPageSize, {
-      headers: {
-        'Authorization': 'Bearer '+ localStorage.getItem('a'),
-        'Content-Type': 'application/json'
-      }
-    })
-    .then( response => {
-      if(response.status === 200){
-
-        // 기존 대댓글 목록에 새로운 대댓글 목록을 추가
-        setSubComments(prevComments => [...prevComments, ...response.data.result.commentList]);
-        setSubTotalPages(Math.ceil((response.data.result.totalComment)/subPageSize));
-
-      }
-    })
-    .catch(error => {
-      // router.push("/error");
-      console.error(error); // 에러 로깅
+    fetchData().then(response => {
+      // 기존 대댓글 목록에 새로운 대댓글 목록을 추가
+      setSubComments(prevComments => [...prevComments, ...response.data.result.commentList]);
+      setSubTotalPages(Math.ceil((response.data.result.totalComment)/subPageSize));
     });
 
   }
@@ -139,32 +118,25 @@ const Comment = ({ comment, boardId, commentList}: { comment: CommentProps, boar
   const handleCreate = () => {
     
     if(window.confirm("등록하시겠습니까?")) {
-      axios.post(USE_BACK_URL+'/post/api/borads/'+ boardId +'/comments',{
+
+      const fetchData = async () => {
+        const result:any = await commonAxios("post",'/post/api/borads/'+ boardId +'/comments', {
           content : subCommentInput,
           parentCommentId : comments?.commentId
-      }, 
-      {
-          headers: {
-              'Authorization': 'Bearer '+ localStorage.getItem('a'),
-              'Content-Type': 'application/json'
-          }
-      })
-      .then( response => {
-        if(response.status === 200){
-          setSubCommentInput(null);
-          alert("등록되었습니다.");
+      }, "alert");
+        return result; // 결과를 반환
+      };
+  
+      fetchData().then(response => {
+        setSubCommentInput(null);
+        alert("등록되었습니다.");
 
-          setSubComments([]);
-          if(subCurrentPage === 1){
-            subCommentList()
-          }else{
-            setSubCurrentPage(1);
-          }
-         
+        setSubComments([]);
+        if(subCurrentPage === 1){
+          subCommentList()
+        }else{
+          setSubCurrentPage(1);
         }
-      })
-      .catch(error => {
-          alert(error.response.data.resultMessage);
       });
     }  
   }
@@ -189,23 +161,16 @@ const Comment = ({ comment, boardId, commentList}: { comment: CommentProps, boar
 
   // 좋아요 / 싫어요
   const handleLikeBadClick = (value: string): void => {
-        
-    axios.post(USE_BACK_URL+'/post/api/comments/'+ comments?.commentId +'/' + value,{}, {
-      headers: {
-          'Authorization': 'Bearer '+ localStorage.getItem('a'),
-          'Content-Type': 'application/json'
-      }
-    })
-    .then( response => {
-      
-        if(response.status === 200){
-          setComments(response.data.result.comment);
-        }
-    })
-    .catch(error => {
-        
-        alert(error.response.data.resultMessage);
+
+    const fetchData = async () => {
+      const result:any = await commonAxios("post",'/post/api/comments/'+ comments?.commentId +'/' + value +'/comments', {}, "alert");
+      return result; // 결과를 반환
+    };
+
+    fetchData().then(response => {
+      setComments(response.data.result.comment);
     });
+
   }
   
   return (

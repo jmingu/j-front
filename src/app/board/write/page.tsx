@@ -1,7 +1,5 @@
 "use client"
 import React, { useEffect, useState } from 'react'
-import {USE_BACK_URL} from '../../../../constants'
-import axios from 'axios';
 import {useRouter} from 'next/navigation'
 import {commonAxios} from '../../common/commonAxios';
 
@@ -76,27 +74,19 @@ const Write = (request:any) => {
             return false;
         }
         if(window.confirm("수정하시겠습니까?")) {
-            axios.patch(USE_BACK_URL+'/post/api/borads/' + param,{
-                title : title,
-                content : content
-            }, 
-            {
-                headers: {
-                    'Authorization': 'Bearer '+ localStorage.getItem('a'),
-                    'Content-Type': 'application/json'
-                }
-            })
-            .then( response => {
-                if(response.status === 200){
-                    alert("수정되었습니다.");
-                    router.push("/board/"+ param);
-                    // window.location.href = "/board/"+ param;
-                    
-                }
-            })
-            .catch(error => {
-                alert(error.response.data.resultMessage);
-            });
+
+            const fetchData = async () => {
+                const result:any = await commonAxios("patch",'/post/api/borads/' + param, {
+                    title : title,
+                    content : content
+                }, "alert");
+                return result; // 결과를 반환
+              };
+          
+              fetchData().then(response => {
+                alert("수정되었습니다.");
+                router.push("/board/"+ param);
+              });
         }      
     }
     
@@ -104,24 +94,16 @@ const Write = (request:any) => {
     useEffect(() => {
         
         if(param !== null && param !== undefined){
-            axios.get(USE_BACK_URL+'/post/api/borads/' + param, {
-                headers: {
-                    'Authorization': 'Bearer '+ localStorage.getItem('a'),
-                    'Content-Type': 'application/json'
-                }
-            })
-            .then( response => {
-                if(response.status === 200){
-                    setTitle(response.data.result.title);
-                    setContent(response.data.result.content);
-                    
-                }
-            })
-            .catch(error => {
-                router.push("/error");
-                console.error(error); // 에러 로깅
-            });
+
+            const fetchData = async () => {
+                const result:any = await commonAxios("get",'/post/api/borads/' + param, null, "page");
+                return result; // 결과를 반환
+            };
         
+            fetchData().then(response => {
+                setTitle(response.data.result.title);
+                setContent(response.data.result.content);
+            });
         }
         
     }, []); 

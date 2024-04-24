@@ -1,9 +1,8 @@
 "use client"
 import React, { useEffect, useState } from 'react'
-import {USE_BACK_URL} from '../../../../constants'
 import Comment from './comment';
 import Link from 'next/link';
-import axios from 'axios';
+import {commonAxios} from '../../common/commonAxios';
 import {useRouter} from 'next/navigation';
 
 
@@ -89,44 +88,33 @@ const BoardDetailPage = ({ params }: { params: { boardId: number } }) => {
 
     // 상세
     useEffect(() => {  
-        axios.get(USE_BACK_URL+'/post/api/borads/' + params.boardId, {
-            headers: {
-                'Authorization': 'Bearer '+ localStorage.getItem('a'),
-                'Content-Type': 'application/json'
-            }
-        })
-        .then( response => {
-            if(response.status === 200){
-                setPost(response.data.result);
-            }
-        })
-        .catch(error => {
-            router.push("/error");
-            console.error(error); // 에러 로깅
+
+        const fetchData = async () => {
+            const result:any = await commonAxios("get","/post/api/borads/" + params.boardId, null, "page");
+            return result; // 결과를 반환
+        };
+
+        fetchData().then(response => {
+            setPost(response.data.result);
         });
+
     }, []);
     
     // 등록
     const handleCreate = () =>{
         if(window.confirm("등록하시겠습니까?")) {
-            axios.post(USE_BACK_URL+'/post/api/borads/'+ params.boardId +'/comments',{
-                content : inputValue
-            }, 
-            {
-                headers: {
-                    'Authorization': 'Bearer '+ localStorage.getItem('a'),
-                    'Content-Type': 'application/json'
-                }
-            })
-            .then( response => {
-                if(response.status === 200){
-                    setInputValue(null);
-                    alert("등록되었습니다.");
-                    commentList();
-                }
-            })
-            .catch(error => {
-                alert(error.response.data.resultMessage);
+
+            const fetchData = async () => {
+                const result:any = await commonAxios("post",'/post/api/borads/'+ params.boardId +'/comments', {
+                    content : inputValue
+                }, "alert");
+                return result; // 결과를 반환
+            };
+    
+            fetchData().then(response => {
+                setInputValue(null);
+                alert("등록되었습니다.");
+                commentList();
             });
         }      
     }
@@ -137,67 +125,48 @@ const BoardDetailPage = ({ params }: { params: { boardId: number } }) => {
     }, [currentPage]);
 
     const commentList = () => {
-        setComments([])
-        axios.get(USE_BACK_URL+'/post/api/borads/' + params.boardId + "/comments?page=" + currentPage + '&size=' + itemPageSize, {
-            headers: {
-                'Authorization': 'Bearer '+ localStorage.getItem('a'),
-                'Content-Type': 'application/json'
-            }
-        })
-        .then( response => {
-            if(response.status === 200){
-                
-                setComments(response.data.result.commentList);
-                setTotalPages(Math.ceil((response.data.result.totalComment)/itemPageSize));
-    
-            }
-        })
-        .catch(error => {
-            router.push("/error");
-            console.error(error); // 에러 로깅
+        setComments([]);
+
+
+        const fetchData = async () => {
+            const result:any = await commonAxios("get",'/post/api/borads/' + params.boardId + "/comments?page=" + currentPage + '&size=' + itemPageSize, null, "page");
+            return result; // 결과를 반환
+        };
+
+        fetchData().then(response => {
+            setComments(response.data.result.commentList);
+            setTotalPages(Math.ceil((response.data.result.totalComment)/itemPageSize));
         });
+
     }
 
     // 좋아요 / 싫어요 클릭
     const handleLikeBadClick = (value: string): void => {
-        
-        axios.post(USE_BACK_URL+'/post/api/borads/'+ post?.boardId +'/' + value,{}, {
-            headers: {
-                'Authorization': 'Bearer '+ localStorage.getItem('a'),
-                'Content-Type': 'application/json'
-            }
-        })
-        .then( response => {
-           
-            if(response.status === 200){
 
-                setPost(response.data.result.boardDetail);
-    
-            }
-        })
-        .catch(error => {
-            alert(error.response.data.resultMessage);
+        const fetchData = async () => {
+            const result:any = await commonAxios("post",'/post/api/borads/'+ post?.boardId +'/' + value, {}, "alert");
+            return result; // 결과를 반환
+        };
+
+        fetchData().then(response => {
+            setPost(response.data.result.boardDetail);
         });
+
     }
 
     const handleDelete = () => {
         if(window.confirm("삭제하시겠습니까?")) {
-            axios.delete(USE_BACK_URL+'/post/api/borads/'+ params.boardId,
-            {
-                headers: {
-                    'Authorization': 'Bearer '+ localStorage.getItem('a'),
-                    'Content-Type': 'application/json'
-                }
-            })
-            .then( response => {
-                if(response.status === 200){
-                    alert("삭제되었습니다.");
-                    router.push("/board");     
-                }
-            })
-            .catch(error => {
-                alert(error.response.data.resultMessage);
+
+            const fetchData = async () => {
+                const result:any = await commonAxios("delete",'/post/api/borads/'+ params.boardId, null, "alert");
+                return result; // 결과를 반환
+            };
+    
+            fetchData().then(response => {
+                alert("삭제되었습니다.");
+                router.push("/board");    
             });
+
         }     
     }
     
