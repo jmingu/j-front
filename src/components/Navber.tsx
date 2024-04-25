@@ -1,6 +1,6 @@
 'use client'
 import Link from 'next/link'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import NavItem from './navItem';
 import { CiMenuBurger } from "react-icons/ci";
 import Image from 'next/image';
@@ -8,7 +8,17 @@ import Logo from '../../public/project-j.png';
 
 const Navber = () => {
     const [menu, setMenu] = useState(false);
-    console.log("333")
+    const [session, setSession] = useState<any>(null);
+
+    useEffect(() => {
+        setSession( sessionStorage.getItem("session"));
+       
+        if(session === null || session === undefined){
+            console.log(localStorage.getItem("a"));
+            
+        }
+      }, []);
+    
 
     const handleMenu = () => {
         setMenu(!menu);

@@ -19,7 +19,6 @@ const NavItem = ({mobile, setMenu} : {mobile?: boolean, setMenu?:any }) => {
     const [userData, setUserData] = useState<UserProps | null>(null);
 
     const [sessionToken, setSessionToken] = useState<string | null>(null);
-    console.log("333")
     useEffect(() => {
         // 클라이언트 사이드에서만 sessionStorage에 접근 가능합니다.
         const data = localStorage.getItem('u');
