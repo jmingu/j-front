@@ -12,17 +12,16 @@ interface UserProps {
     userName: string
 }
 
-const NavItem = ({mobile, setMenu} : {mobile?: boolean, setMenu?:any }) => {
+const NavItem = ({mobile, setMenu} : {mobile?: boolean, setMenu?:any}) => {
    
     const router = useRouter();
 
     const [userData, setUserData] = useState<UserProps | null>(null);
-
-    const [sessionToken, setSessionToken] = useState<string | null>(null);
     useEffect(() => {
+        
         // 클라이언트 사이드에서만 sessionStorage에 접근 가능합니다.
-        const data = localStorage.getItem('u');
-        setSessionToken(localStorage.getItem('a'));
+        const data = sessionStorage.getItem('session');
+
         if(data !== null){
             setUserData(JSON.parse(data));
         }
@@ -57,7 +56,7 @@ const NavItem = ({mobile, setMenu} : {mobile?: boolean, setMenu?:any }) => {
                             <button onClick={()=>{ setMenu(false); router.push('/notice');  }}>공지사항</button>
                         </li>
                         {
-                            (sessionToken === null || sessionToken === undefined) ? null :
+                            (userData === null || userData === undefined) ? null :
                             <li>
                                 <button onClick={()=>{ setMenu(false); router.push('/info');  }}>내정보</button>
                             </li> 
@@ -80,7 +79,7 @@ const NavItem = ({mobile, setMenu} : {mobile?: boolean, setMenu?:any }) => {
                             <Link href="/notice">공지사항</Link> 
                         </li>
                         {
-                            (sessionToken === null || sessionToken === undefined) ? null :
+                            (userData === null || userData === undefined) ? null :
                             <li>
                                 <Link href="/info">내정보</Link> 
                             </li> 

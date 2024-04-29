@@ -1,6 +1,5 @@
 "use client"
 import React, { useEffect, useState } from 'react'
-import {USE_BACK_URL} from '../../../../constants'
 import {commonAxios} from '../../common/commonAxios';
 import SubComment from './subComment';
 import { BiLike  } from "react-icons/bi";

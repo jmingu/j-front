@@ -5,19 +5,35 @@ import NavItem from './navItem';
 import { CiMenuBurger } from "react-icons/ci";
 import Image from 'next/image';
 import Logo from '../../public/project-j.png';
+import {commonAxios} from '../app/common/commonAxios';
+import {useRouter} from 'next/navigation';
 
 const Navber = () => {
+    const router = useRouter();
     const [menu, setMenu] = useState(false);
     const [session, setSession] = useState<any>(null);
 
     useEffect(() => {
-        setSession( sessionStorage.getItem("session"));
-       
-        if(session === null || session === undefined){
-            console.log(localStorage.getItem("a"));
-            
+        const sessionVal = sessionStorage.getItem("session");
+        console.log(sessionVal)
+        // 새로운 탭 또는 새로운 로그인
+        if(sessionVal === null || sessionVal === undefined){
+            console.log(sessionVal)
+            // 토큰으로 세션 다시 넣기
+            const fetchData = async () => {
+                const result:any = await commonAxios("get",'/user/api/user/token', null, "page");
+                return result; // 결과를 반환
+            };
+          
+            fetchData().then(response => {
+                const newSession = JSON.stringify(response.data.result);
+                sessionStorage.setItem("session", newSession);
+                setSession(newSession); // 세션 상태 업데이트
+            });
+        } else {
+            setSession(sessionVal); // 이미 세션 정보가 있으면 상태에 설정
         }
-      }, []);
+    }, []);
     
 
     const handleMenu = () => {
@@ -42,7 +58,7 @@ const Navber = () => {
                     </div>
 
                     <div className='hidden sm:block'>
-                        <NavItem />
+                        <NavItem/>
                     </div>
                 </div>
             </div>
