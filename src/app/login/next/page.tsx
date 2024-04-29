@@ -31,7 +31,7 @@ const NextPage = (request:any) => {
                 if (response.status === 200) {
                     localStorage.setItem('a', response.data.result.accessToken);
                     localStorage.setItem('b', response.data.result.refreshToken);
-                    sessionStorage.setItem("session", "session");
+                    // sessionStorage.setItem("session", "session");
                     
                     const tokenData = response.data.result.accessToken;
 
@@ -44,6 +44,7 @@ const NextPage = (request:any) => {
 
                     if (userResponse.status === 200) {
                         localStorage.setItem('u', JSON.stringify(userResponse.data.result));
+                        sessionStorage.setItem("session", JSON.stringify(userResponse.data.result));
                         setUserData(userResponse.data.result);
                     }
 

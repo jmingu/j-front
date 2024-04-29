@@ -66,6 +66,7 @@ const LoginPage = () => {
 
                 if (userResponse.status === 200) {
                     localStorage.setItem('u', JSON.stringify(userResponse.data.result));
+                    sessionStorage.setItem("session", JSON.stringify(userResponse.data.result));
                     setUserData(userResponse.data.result);
                 }
                 window.location.href = "/";

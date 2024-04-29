@@ -31,7 +31,8 @@ const NavItem = ({mobile, setMenu} : {mobile?: boolean, setMenu?:any }) => {
 
      
       const handleLogout = () => {
-        sessionStorage.clear()
+        sessionStorage.clear();
+        localStorage.clear();
     }
 
     // 모바일
