@@ -1,7 +1,6 @@
 "use client"
 import React, { useEffect, useState } from 'react'
 import Link from 'next/link';
-import {useRouter} from 'next/navigation';
 import {commonAxios} from '../common/commonAxios';
 
 interface BoardItem {
@@ -22,9 +21,6 @@ interface UserProps {
 
 
 const BoardPage = () => {
-    
-    const router = useRouter();
-    
     
     const [boardList, setBoardList] = useState<BoardItem[]>([]); // boardList 상태 선언
     const [totalPages, setTotalPages] = useState(0); // 전체 페이지 개수

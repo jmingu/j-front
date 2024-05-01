@@ -2,33 +2,17 @@
 import Link from 'next/link';
 import React, { useEffect, useState } from 'react'
 import {useRouter} from 'next/navigation';
-import axios from 'axios';
-import {USE_BACK_URL} from '../../constants';
 
-interface UserProps {
-    email: string,
-    gender: string,
-    nickname: string,
-    userName: string
-}
-
-const NavItem = ({mobile, setMenu} : {mobile?: boolean, setMenu?:any}) => {
+const NavItem = ({mobile, setMenu, session} : {mobile?: boolean, setMenu?:any, session?:any}) => {
    
     const router = useRouter();
 
-    const [userData, setUserData] = useState<UserProps | null>(null);
     useEffect(() => {
-        
+        console.log(session)
         // 클라이언트 사이드에서만 sessionStorage에 접근 가능합니다.
-        const data = sessionStorage.getItem('session');
-
-        if(data !== null){
-            setUserData(JSON.parse(data));
-        }
-       
+    
     }, []);
 
-     
       const handleLogout = () => {
         sessionStorage.clear();
         localStorage.clear();
@@ -41,7 +25,7 @@ const NavItem = ({mobile, setMenu} : {mobile?: boolean, setMenu?:any}) => {
                 <div className='w-full ml-5 mt-20'>
                     <div className='mb-10'>
                         {
-                            userData !== null ? 
+                            session !== null ? 
                                 <div>
                                     <a onClick={handleLogout} href='/' >로그아웃</a>
                                 </div> :
@@ -56,7 +40,7 @@ const NavItem = ({mobile, setMenu} : {mobile?: boolean, setMenu?:any}) => {
                             <button onClick={()=>{ setMenu(false); router.push('/notice');  }}>공지사항</button>
                         </li>
                         {
-                            (userData === null || userData === undefined) ? null :
+                            (session === null || session === undefined) ? null :
                             <li>
                                 <button onClick={()=>{ setMenu(false); router.push('/info');  }}>내정보</button>
                             </li> 
@@ -79,14 +63,14 @@ const NavItem = ({mobile, setMenu} : {mobile?: boolean, setMenu?:any}) => {
                             <Link href="/notice">공지사항</Link> 
                         </li>
                         {
-                            (userData === null || userData === undefined) ? null :
+                            (session === null || session === undefined) ? null :
                             <li>
                                 <Link href="/info">내정보</Link> 
                             </li> 
                         }
                         <li className='ml-7 text-sm'>
                             {
-                                userData !== null ? 
+                                session !== null ? 
                                     <>
                                         <a onClick={handleLogout} href='/' >로그아웃</a>
                                     </> :

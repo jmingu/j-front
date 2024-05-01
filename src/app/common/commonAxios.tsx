@@ -13,7 +13,9 @@ export const customAxios: AxiosInstance = axios.create({
 customAxios.interceptors.request.use(
   (config) => {
     // 현재 토큰 값을 localStorage에서 가져옵니다.
-    const currentToken = localStorage.getItem('a');
+    const currentToken = (localStorage.getItem('a') === null || localStorage.getItem('a') === undefined) ? "null" : localStorage.getItem('a');
+    
+    console.log(currentToken)
     if (currentToken) {
       // Authorization 헤더에 현재 토큰 값을 설정합니다.
       config.headers['Authorization'] = `Bearer ${currentToken}`;
