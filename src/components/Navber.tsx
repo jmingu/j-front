@@ -11,7 +11,7 @@ const Navber = () => {
     
     const [menu, setMenu] = useState(false);
     const [session, setSession] = useState<any>(null);
-
+    console.log("ssssss")
     useEffect(() => {
         const sessionVal = sessionStorage.getItem("session");
         console.log(sessionVal);
