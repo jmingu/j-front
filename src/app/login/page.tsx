@@ -19,6 +19,7 @@ const LoginPage = () => {
     const router = useRouter();
 
     const redirectUri = USE_FRONT_URL +"/login/next&state=dkfiskadspd";
+    const [autoLogin, setAutoLogin] = useState(false); // 자동 로그인 상태를 관리할 useState 추가
 
     const [clientId, setClientId] = useState(process.env.NEXT_PUBLIC_CLIENT_ID);
 
@@ -81,7 +82,7 @@ const LoginPage = () => {
     
     return (
         <div className=''>
-            <div className='flex h-48 border-[2px] border-gray-200 max-w-96 m-auto mt-28 items-center'>
+            <div className='flex h-60 border-[2px] border-gray-200 max-w-96 m-auto mt-28 items-center'>
                 <div className='w-full px-10'>
                     <div className=''>
                         <div className=''>
@@ -96,6 +97,24 @@ const LoginPage = () => {
                                 type='password'
                                 onChange={(e) => setPassword(e.target.value)}
                             />
+                        </div>
+                        <div className='flex items-center mb-2'> {/* 체크박스와 라벨을 flex container 안에 배치 */}
+                        <input
+                            id='autoLogin' // 체크박스에 id 제공
+                            type='checkbox'
+                            checked={autoLogin} // 체크박스 상태는 autoLogin 상태에 의해 결정
+                            onChange={(e) => {
+                                setAutoLogin(e.target.checked); 
+                                console.log(e.target.checked)
+                                if(e.target.checked === true){
+                                    localStorage.setItem("auto","true");
+                                }else if(e.target.checked === false){
+                                    localStorage.removeItem("auto");
+                                }
+                            }} // 체크박스 상태 변경 시 autoLogin 상태 업데이트
+                            className='mr-2' // 체크박스와 라벨 사이의 간격 조정
+                        />
+                        <label htmlFor='autoLogin'>자동 로그인</label> {/* htmlFor을 사용해 라벨 클릭 시 체크박스도 함께 토글 */}
                         </div>
                     </div>
 

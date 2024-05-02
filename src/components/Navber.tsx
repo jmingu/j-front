@@ -6,12 +6,28 @@ import { CiMenuBurger } from "react-icons/ci";
 import Image from 'next/image';
 import Logo from '../../public/project-j.png';
 import {commonAxios} from '../app/common/commonAxios';
+import { usePathname, useSearchParams } from 'next/navigation'
 
 const Navber = () => {
     
     const [menu, setMenu] = useState(false);
     const [session, setSession] = useState<any>(null);
-    console.log("ssssss")
+
+    // 페이지 이동시 로그인 감지
+    const pathname = usePathname();
+    const searchParams = useSearchParams();
+    useEffect(() => {
+        const accessVal = localStorage.getItem("a");
+        const refreshVal = localStorage.getItem("p");
+
+        if(accessVal === null || accessVal === undefined || refreshVal === null || refreshVal === undefined){
+            sessionStorage.clear();
+            localStorage.clear();
+            setSession(null);
+        }
+    }, [pathname, searchParams])
+
+
     useEffect(() => {
         const sessionVal = sessionStorage.getItem("session");
         console.log(sessionVal);
